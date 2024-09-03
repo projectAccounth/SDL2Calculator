@@ -2,19 +2,18 @@
 
 #include "main.h"
 
-namespace mainProgram {
-
-    enum class buttonState
+namespace mainProgram
+{
+    typedef struct
     {
-        DEFAULT, HOVERED, PRESSED
-    };
+        SDL_Rect buttonBox; // dimensions of button
+        Color3 colour;
+        bool pressed;
+    } button_t;
 
-    class Button
-    {
-    public:
+    // This will be placed in the main event loop
+    static void buttonProcessEvent(button_t *btn, const SDL_Event *ev);
 
-    private:
-        
-    };
+    static bool renderButton(SDL_Renderer *r, button_t *btn);
 
-}
+} // namespace mainProgram

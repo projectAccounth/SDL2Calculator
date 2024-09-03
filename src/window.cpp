@@ -5,20 +5,20 @@ namespace mainProgram {
 
     SDL_Rect Entity1;
 
-    void Window::createWindow() {
-        mainWindow = SDL_CreateWindow("Main", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, WINDOW_WIDTH, WINDOW_HEIGHT , 0);
+    void Window::createWindow(const char* windowText, int windowWidth, int windowHeight) {
+        mainWindow = SDL_CreateWindow(windowText, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, windowWidth, windowHeight, 0);
     }
 
-    void Window::createRenderer() {
-        mainRenderer = SDL_CreateRenderer(mainWindow, -1, SDL_RENDERER_PRESENTVSYNC);
+    void Window::createRenderer(SDL_Window *window) {
+        mainRenderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_PRESENTVSYNC);
     }
 
     void Window::initializeProgram() {
         SDL_Init(SDL_INIT_EVERYTHING);
         
-        createWindow();
+        createWindow("Program", WINDOW_WIDTH, WINDOW_HEIGHT);
 
-        createRenderer();
+        createRenderer(mainWindow);
     }
 
     void Window::renderWindow() {

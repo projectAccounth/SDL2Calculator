@@ -13,9 +13,9 @@ namespace mainProgram {
 
 	public:
 
-		void createWindow();
+		void createWindow(const char* windowText, int windowWidth, int windowHeight);
 
-		void createRenderer();
+		void createRenderer(SDL_Window *window);
 
 		void initializeProgram();
 

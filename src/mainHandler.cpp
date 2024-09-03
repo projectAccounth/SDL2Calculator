@@ -40,3 +40,12 @@ namespace mainProgram {
 
 	}
 }
+
+SDL_Color Color3ToSDLColor(Color3 color) {
+	SDL_Color returnValue;
+	returnValue.r = color.r;
+	returnValue.g = color.g;
+	returnValue.b = color.b;
+	returnValue.a = color.a;
+	return returnValue;
+}
