@@ -6,6 +6,17 @@ namespace mainProgram {
     SDL_Renderer* mainRenderer = NULL;
     SDL_Window* mainWindow = NULL;
 
+	void Main::onQuit() {
+
+		SDL_DestroyRenderer(mainProgram::mainRenderer);
+
+        SDL_DestroyWindowSurface(mainProgram::mainWindow);
+
+		SDL_DestroyWindow(mainProgram::mainWindow);
+        TTF_Quit();
+		SDL_Quit();
+	}
+
 
     bool Main::processEvent() {
 		SDL_Event event;
@@ -15,29 +26,18 @@ namespace mainProgram {
 			switch (event.type) {
 				case SDL_WINDOWEVENT_CLOSE: {
 					isRunning = false;
+					onQuit();
 					break;
 				}
 				case SDL_QUIT: {
 					isRunning = false;
+					onQuit();
 					break;
 				}
 			}	
 		}
 
 		return isRunning;
-	}
-
-	void Main::onQuit() {
-
-		SDL_DestroyRenderer(mainProgram::mainRenderer);
-
-        SDL_DestroyWindowSurface(mainProgram::mainWindow);
-
-		SDL_DestroyWindow(mainProgram::mainWindow);
-
-		SDL_Quit();
-        TTF_Quit();
-
 	}
 }
 

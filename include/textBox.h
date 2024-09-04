@@ -5,8 +5,9 @@
 
 #include "main.h"
 
-TTF_Font* mainFont = TTF_OpenFont("../res/fonts/Amiko-Regular.ttf", 15);
-Color3 boxColor = {188, 188, 188, 255};
+extern TTF_Font* mainFont;
+extern Color3 textColor;
+extern Color3 boxColor;
 
 typedef struct textBox_t {
     SDL_Rect* textBox_Box;
@@ -15,13 +16,11 @@ typedef struct textBox_t {
     const char* text;
 } textBox_t;
 
-textBox_t displayBox = {
-    .textBox_Box = new SDL_Rect {},
-    .textFont = mainFont,
-    .boxColor = Color3ToSDLColor(boxColor),
-    .text = ""
-};
+
+extern textBox_t displayBox;
 
 void renderTextBox(textBox_t textBox);
+
+void updateTextBox(textBox_t textBox, const char* textToUpdate);
 
 #endif /* TEXTBOX_H */

@@ -33,10 +33,9 @@ namespace mainProgram {
 	private:
 
 	public:
+		void onQuit();
 
 		bool processEvent();
-
-		void onQuit();
 	};
 }
 

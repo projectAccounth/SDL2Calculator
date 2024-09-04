@@ -1,4 +1,5 @@
 #include "../include/window.h"
+#include "../include/textBox.h"
 
 namespace mainProgram {
 
@@ -25,7 +26,7 @@ namespace mainProgram {
         
         SDL_SetRenderDrawColor(mainRenderer, 128, 128, 128, 255);
         SDL_RenderClear(mainRenderer);
-
+        renderTextBox(displayBox);
         SDL_RenderPresent(mainRenderer);
 
     }
