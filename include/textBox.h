@@ -5,19 +5,18 @@
 
 #include "main.h"
 
-extern TTF_Font* mainFont;
 extern Color3 textColor;
 extern Color3 boxColor;
 
 typedef struct textBox_t {
     SDL_Rect* textBox_Box;
-    TTF_Font* textFont;
     SDL_Color boxColor;
     const char* text;
 } textBox_t;
 
 
 extern textBox_t displayBox;
+extern textBox_t prevInputBox;
 
 void renderTextBox(textBox_t textBox);
 

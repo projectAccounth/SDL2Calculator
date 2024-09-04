@@ -6,18 +6,24 @@
 
 using namespace mainProgram;
 
-TTF_Font* mainFont = TTF_OpenFont("../res/fonts/Amiko-Regular.ttf", 15);
-Color3 textColor = {255, 255, 255, 255};
+Color3 textColor = {0, 0, 0, 255};
 Color3 boxColor = {188, 188, 188, 255};
 
 textBox_t displayBox = {
-    .textBox_Box = new SDL_Rect {0, 0, 200, 100},
-    .textFont = mainFont,
+    .textBox_Box = new SDL_Rect {20, 20, 275, 70},
     .boxColor = Color3ToSDLColor(boxColor),
-    .text = ""
+    .text = "Hello World!"
 };
 
-int main() {
+textBox_t prevInputBox = {
+    .textBox_Box = new SDL_Rect {WINDOW_WIDTH - 20 - 80, 20, 80, 70},
+    .boxColor = Color3ToSDLColor(boxColor),
+    .text = "h"
+};
+
+int main(int argc, char* argv[]) {
+
+    // std::cout << TTF_GetError() << " Line 10, main.cpp\n";
 
     class Main mainClass;
 

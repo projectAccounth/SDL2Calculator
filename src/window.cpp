@@ -16,7 +16,7 @@ namespace mainProgram {
 
     void Window::initializeProgram() {
         SDL_Init(SDL_INIT_EVERYTHING);
-        
+        TTF_Init();
         createWindow("Program", WINDOW_WIDTH, WINDOW_HEIGHT);
 
         createRenderer(mainWindow);
@@ -27,6 +27,7 @@ namespace mainProgram {
         SDL_SetRenderDrawColor(mainRenderer, 128, 128, 128, 255);
         SDL_RenderClear(mainRenderer);
         renderTextBox(displayBox);
+        renderTextBox(prevInputBox);
         SDL_RenderPresent(mainRenderer);
 
     }
