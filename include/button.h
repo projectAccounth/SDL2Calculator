@@ -54,6 +54,8 @@ namespace mainProgram
 
         bool isVisible() const;
 
+        void toggleVisiblility(bool value);
+
         // destructor for the class
         ~textButton() {
             if (textTexture != nullptr)

@@ -65,4 +65,7 @@ namespace mainProgram
     bool textButton::isVisible() const {
         return visible;
     }
+    void textButton::toggleVisiblility(bool value) {
+        visible = value;
+    }
 } // namespace mainProgram

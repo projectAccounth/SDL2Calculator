@@ -21,8 +21,8 @@
 using namespace std::chrono;
 using namespace std::this_thread;
 
-#define WINDOW_WIDTH 400
-#define WINDOW_HEIGHT 500
+#define WINDOW_WIDTH 600
+#define WINDOW_HEIGHT 800
 
 namespace mainProgram {
 		
