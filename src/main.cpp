@@ -3,6 +3,8 @@
 #include "../include/window.h"
 #include "../include/frameEvents.h"
 #include "../include/textBox.h"
+#include "../include/button.h"
+#include "../include/buttonMgr.h"
 
 using namespace mainProgram;
 

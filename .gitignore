@@ -1,2 +1,4 @@
 .vscode
 build
+clog.txt
+build.sh
