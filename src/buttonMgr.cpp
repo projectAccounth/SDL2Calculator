@@ -14,6 +14,12 @@ namespace mainProgram {
         }
     }
 
+    void buttonManager::loadAllText(SDL_Renderer *renderer) {
+        for (auto &button : buttons) {
+            button.loadText(renderer);
+        }
+    }
+
     void buttonManager::handleEvents(SDL_Event &e) {
         // checking whether you're moving the mouse or pressing the mouse
         if (e.type == SDL_MOUSEMOTION || e.type == SDL_MOUSEBUTTONDOWN) {

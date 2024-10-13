@@ -21,16 +21,18 @@ namespace mainProgram
         SDL_Color hoverColor; // color for hovering
 
         TTF_Font *textFont; // font for the text in the textButton
-
         std::string text; // text for the textButton
 
         textAlign TextAlign;
 
         bool hovered;
-
         bool visible, active;
+        std::function<void()> buttonAction;
 
-        textButton(int x, int y, int w, int h, SDL_Color c, const std::string& t, SDL_Color tc, TTF_Font* f, textAlign align, SDL_Color hc)
+        textButton(int x, int y, int w, int h,
+                    SDL_Color c, const std::string& t,
+                    SDL_Color tc, TTF_Font* f,
+                    textAlign align, SDL_Color hc)
             : buttonRect{ x, y, w, h },
               buttonColor(c),
               textColor(tc),

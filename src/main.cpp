@@ -15,6 +15,10 @@ Color3 boxColor = {188, 188, 188, 255};
 SDL_Color defaultButtonColor = {188, 188, 188, 255};
 SDL_Color hoveredButtonColor = {155, 155, 155, 255};
 
+// corresponding button lists for those button types
+buttonManager numericButtons;
+buttonManager operationButtons;
+buttonManager functionButtons;
 
 // main display box for the results and the inputs, etc.
 textBox_t displayBox = {
@@ -36,9 +40,9 @@ int main(int argc, char* argv[]) {
 
     // std::cout << TTF_GetError() << " Line 10, main.cpp\n";
 
-    class Main mainClass;
+    Main mainClass;
 
-    class Window programWindow;
+    Window programWindow;
 
     programWindow.initializeProgram();
 

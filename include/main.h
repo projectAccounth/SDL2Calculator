@@ -15,6 +15,7 @@
 #include <chrono>
 #include <thread>
 #include <vector>
+#include <functional>
 
 #include "color3.h"
 

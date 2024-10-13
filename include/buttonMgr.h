@@ -13,6 +13,8 @@ namespace mainProgram {
         // adding buttons to the existing button list
         void addButton(textButton button);
 
+        void loadAllText(SDL_Renderer *renderer);
+
         // rendering all buttons added in the list
         void renderAll(SDL_Renderer *renderer);
 
