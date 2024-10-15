@@ -22,8 +22,8 @@
 using namespace std::chrono;
 using namespace std::this_thread;
 
-#define WINDOW_WIDTH 600
-#define WINDOW_HEIGHT 800
+#define WINDOW_WIDTH 400
+#define WINDOW_HEIGHT 500
 
 namespace mainProgram {
 		
@@ -39,7 +39,10 @@ namespace mainProgram {
 	public:
 		void onQuit();
 
-		bool processEvent();
+		void processEvent(SDL_Event event, bool isRunning,
+							buttonManager numericButtons,
+							buttonManager operationButtons,
+							buttonManager functionButtons);
 	};
 }
 

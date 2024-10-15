@@ -1,5 +1,8 @@
 #pragma once
 
+#ifndef BUTTON_H
+#define BUTTON_H
+
 #include "main.h"
 
 namespace mainProgram
@@ -30,7 +33,7 @@ namespace mainProgram
         std::function<void()> buttonAction;
 
         textButton(int x, int y, int w, int h,
-                    SDL_Color c, const std::string& t,
+                    SDL_Color c, std::string t,
                     SDL_Color tc, TTF_Font* f,
                     textAlign align, SDL_Color hc)
             : buttonRect{ x, y, w, h },
@@ -66,3 +69,5 @@ namespace mainProgram
     };
 
 } // namespace mainProgram
+
+#endif /* BUTTON_H */

@@ -1,5 +1,7 @@
 #include "../include/main.h"
 #include "../include/frameEvents.h"
+#include "../include/button.h"
+#include "../include/buttonMgr.h"
 
 namespace mainProgram {
 
@@ -18,9 +20,10 @@ namespace mainProgram {
 	}
 
 
-    bool Main::processEvent() {
-		SDL_Event event;
-		bool isRunning = true;
+    void Main::processEvent(SDL_Event event, bool isRunning,
+							buttonManager numericButtons,
+							buttonManager operationButtons,
+							buttonManager functionButtons) {
 		while (SDL_PollEvent(&event)) {
 			GetFrameEvents().push_back(event);
 			switch (event.type) {
@@ -35,9 +38,10 @@ namespace mainProgram {
 					break;
 				}
 			}	
+			numericButtons.handleEvents(event);
+			operationButtons.handleEvents(event);
+			functionButtons.handleEvents(event);
 		}
-
-		return isRunning;
 	}
 }
 

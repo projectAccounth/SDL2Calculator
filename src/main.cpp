@@ -15,10 +15,7 @@ Color3 boxColor = {188, 188, 188, 255};
 SDL_Color defaultButtonColor = {188, 188, 188, 255};
 SDL_Color hoveredButtonColor = {155, 155, 155, 255};
 
-// corresponding button lists for those button types
-buttonManager numericButtons;
-buttonManager operationButtons;
-buttonManager functionButtons;
+
 
 // main display box for the results and the inputs, etc.
 textBox_t displayBox = {
@@ -34,25 +31,43 @@ textBox_t prevInputBox = {
     .text = "h"
 };
 
-
+// corresponding button lists for those button types
+    buttonManager numericButtons;
+    buttonManager operationButtons;
+    buttonManager functionButtons;
 
 int main(int argc, char* argv[]) {
-
-    // std::cout << TTF_GetError() << " Line 10, main.cpp\n";
-
+    
     Main mainClass;
 
     Window programWindow;
 
     programWindow.initializeProgram();
 
+    TTF_Font *mainFont = TTF_OpenFont("./res/fonts/Amiko-Regular.ttf", 25);
+
+    textButton num1(20, 100, 30, 30, defaultButtonColor, std::string("1"), SDL_Color {0, 0, 0, 255}, mainFont, CENTER, hoveredButtonColor);
+
+    numericButtons.addButton(num1);
+
+
+    numericButtons.loadAllText(mainRenderer);
+    functionButtons.loadAllText(mainRenderer);
+    operationButtons.loadAllText(mainRenderer);
+
     bool isRunning = true;
 
     while (isRunning) {
-        mainClass.processEvent();
+        SDL_Event event;
+		while (SDL_PollEvent(&event)) {
+			mainClass.processEvent(event, isRunning, numericButtons, operationButtons, functionButtons);			
+		}
+        numericButtons.renderAll(mainRenderer);
+		operationButtons.renderAll(mainRenderer);
+		functionButtons.renderAll(mainRenderer);
         programWindow.renderWindow();
     }
-
+    
     mainClass.onQuit();
 
     return 0;
