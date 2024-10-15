@@ -5,21 +5,39 @@
 
 #include "main.h"
 
-extern Color3 textColor;
-extern Color3 boxColor;
+namespace mainProgram {
 
-typedef struct textBox_t {
-    SDL_Rect* textBox_Box;
+class textBox {
+private:
+    SDL_Rect textBoxRect;
     SDL_Color boxColor;
     const char* text;
-} textBox_t;
+    SDL_Color textColor;
 
+    TTF_Font* textFont;
 
-extern textBox_t displayBox;
-extern textBox_t prevInputBox;
+    SDL_Surface *textSurface;
+    SDL_Texture* textTexture;
+public:
 
-void renderTextBox(textBox_t textBox);
+    textBox(SDL_Rect br, SDL_Color bc, const char* t, SDL_Color tc, TTF_Font* tf) :
+        textBoxRect(br),
+        boxColor(bc),
+        text(t),
+        textColor(tc),
+        textFont(tf) {}
+    
+    void render(SDL_Renderer *renderer);
 
-void updateTextBox(textBox_t textBox, const char* textToUpdate);
+    void update(SDL_Renderer *renderer, const char* textToUpdate);
+
+    ~textBox() {
+        if (textSurface != nullptr) {
+            SDL_FreeSurface(textSurface);
+        }
+    }
+};
+
+}
 
 #endif /* TEXTBOX_H */

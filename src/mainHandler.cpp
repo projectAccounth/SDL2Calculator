@@ -1,26 +1,26 @@
 #include "../include/main.h"
+#include "../include/mainHandling.h"
 #include "../include/frameEvents.h"
 #include "../include/button.h"
 #include "../include/buttonMgr.h"
+#include "../include/textBox.h"
 
 namespace mainProgram {
 
-    SDL_Renderer* mainRenderer = NULL;
-    SDL_Window* mainWindow = NULL;
+	void Main::onQuit(SDL_Renderer *renderer, SDL_Window *window) {
 
-	void Main::onQuit() {
+		SDL_DestroyRenderer(renderer);
 
-		SDL_DestroyRenderer(mainProgram::mainRenderer);
+        SDL_DestroyWindowSurface(window);
 
-        SDL_DestroyWindowSurface(mainProgram::mainWindow);
-
-		SDL_DestroyWindow(mainProgram::mainWindow);
+		SDL_DestroyWindow(window);
         TTF_Quit();
 		SDL_Quit();
 	}
 
 
-    void Main::processEvent(SDL_Event event, bool isRunning,
+    void Main::processEvent(SDL_Renderer *renderer, SDL_Window *window,
+							SDL_Event &event, bool isRunning,
 							buttonManager numericButtons,
 							buttonManager operationButtons,
 							buttonManager functionButtons) {
@@ -29,12 +29,12 @@ namespace mainProgram {
 			switch (event.type) {
 				case SDL_WINDOWEVENT_CLOSE: {
 					isRunning = false;
-					onQuit();
+					onQuit(renderer, window);
 					break;
 				}
 				case SDL_QUIT: {
 					isRunning = false;
-					onQuit();
+					onQuit(renderer, window);
 					break;
 				}
 			}	
@@ -43,13 +43,4 @@ namespace mainProgram {
 			functionButtons.handleEvents(event);
 		}
 	}
-}
-
-SDL_Color Color3ToSDLColor(Color3 color) {
-	SDL_Color returnValue;
-	returnValue.r = color.r;
-	returnValue.g = color.g;
-	returnValue.b = color.b;
-	returnValue.a = color.a;
-	return returnValue;
 }

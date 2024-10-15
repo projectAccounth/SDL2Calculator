@@ -1,30 +1,30 @@
 #include "../include/textBox.h"
 
-void renderTextBox(textBox_t box) {
-    TTF_Font *mainFont = TTF_OpenFont("../res/fonts/Amiko-Regular.ttf", 35);
-    // as TTF_RenderText_Solid could only be used on
-    // SDL_Surface then you have to create the surface first
-    SDL_Surface* surfaceMessage =
-    TTF_RenderText_Blended(mainFont, box.text, Color3ToSDLColor(textColor)); 
+namespace mainProgram {
+    void textBox::render(SDL_Renderer *renderer) {
+        // as TTF_RenderText_Solid could only be used on
+        // SDL_Surface then you have to create the surface first
+        textSurface = TTF_RenderText_Blended(textFont, text, textColor); 
 
-    // now you can convert it into a texture
-    SDL_Texture* text = SDL_CreateTextureFromSurface(mainProgram::mainRenderer, surfaceMessage);
+        // now you can convert it into a texture
+        SDL_Texture* textTexture = SDL_CreateTextureFromSurface(renderer, textSurface);
 
-    SDL_Rect *textRect = new SDL_Rect {
-        .x = box.textBox_Box->x,
-        .y = box.textBox_Box->y + (box.textBox_Box->h / 2) - surfaceMessage->h / 2,
-        .w = surfaceMessage->w,
-        .h = surfaceMessage->h
-    };
+        SDL_Rect *textRect = new SDL_Rect {
+            .x = textBoxRect.x,
+            .y = textBoxRect.y + (textBoxRect.h / 2) - textSurface->h / 2,
+            .w = textSurface->w,
+            .h = textSurface->h
+        };
 
-    SDL_SetRenderDrawColor(mainProgram::mainRenderer, box.boxColor.r, box.boxColor.g, box.boxColor.b, box.boxColor.a);
+        SDL_SetRenderDrawColor(renderer, boxColor.r, boxColor.g, boxColor.b, boxColor.a);
 
-    SDL_RenderFillRect(mainProgram::mainRenderer, box.textBox_Box);
-    SDL_RenderCopy(mainProgram::mainRenderer, text, NULL, textRect);
-    SDL_FreeSurface(surfaceMessage);
-}
+        SDL_RenderFillRect(renderer, &textBoxRect);
+        SDL_RenderCopy(renderer, textTexture, NULL, textRect);
+        SDL_FreeSurface(textSurface);
+    }
 
-void updateTextBox(textBox_t box, const char* textToUpdate) {
-    box.text = textToUpdate;
-    renderTextBox(box);
+    void textBox::update(SDL_Renderer *renderer, const char* textToUpdate) {
+        text = textToUpdate;
+        render(renderer);
+    }
 }

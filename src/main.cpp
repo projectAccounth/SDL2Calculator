@@ -1,4 +1,5 @@
 #include "../include/main.h"
+#include "../include/mainHandling.h"
 #include "../include/button.h"
 #include "../include/window.h"
 #include "../include/frameEvents.h"
@@ -8,8 +9,8 @@
 
 using namespace mainProgram;
 
-Color3 textColor = {0, 0, 0, 255};
-Color3 boxColor = {188, 188, 188, 255};
+SDL_Window *mainWindow = NULL;
+SDL_Renderer *mainRenderer = NULL;
 
 // Default button color and hovered button color, of course.
 SDL_Color defaultButtonColor = {188, 188, 188, 255};
@@ -17,19 +18,6 @@ SDL_Color hoveredButtonColor = {155, 155, 155, 255};
 
 
 
-// main display box for the results and the inputs, etc.
-textBox_t displayBox = {
-    .textBox_Box = new SDL_Rect {20, 20, 275, 70},
-    .boxColor = Color3ToSDLColor(boxColor),
-    .text = "Hello World!"
-};
-
-// the box which will show the previous inputs.
-textBox_t prevInputBox = {
-    .textBox_Box = new SDL_Rect {WINDOW_WIDTH - 20 - 80, 20, 80, 70},
-    .boxColor = Color3ToSDLColor(boxColor),
-    .text = "h"
-};
 
 // corresponding button lists for those button types
     buttonManager numericButtons;
@@ -42,11 +30,26 @@ int main(int argc, char* argv[]) {
 
     Window programWindow;
 
-    programWindow.initializeProgram();
+    SDL_Init(SDL_INIT_EVERYTHING);
+    TTF_Init();
 
     TTF_Font *mainFont = TTF_OpenFont("./res/fonts/Amiko-Regular.ttf", 25);
 
-    textButton num1(20, 100, 30, 30, defaultButtonColor, std::string("1"), SDL_Color {0, 0, 0, 255}, mainFont, CENTER, hoveredButtonColor);
+    mainWindow = programWindow.createWindow("Program", WINDOW_WIDTH, WINDOW_HEIGHT);
+
+    mainRenderer = programWindow.createRenderer(mainWindow);
+
+    textBox displayBox(SDL_Rect{20, 20, 275, 70}, SDL_Color{188, 188, 188, 255}, "Hello World!", SDL_Color{0, 0, 0, 255}, mainFont );
+    textBox prevInputBox(SDL_Rect{WINDOW_WIDTH - 20 - 80, 20, 80, 70}, SDL_Color{188, 188, 188, 255}, "h", SDL_Color{0, 0, 0, 255}, mainFont );
+
+    if (mainFont == nullptr) {
+        std::cout << SDL_GetError();
+        return -1;
+    }
+
+    std::cout << SDL_GetError() << "\n";
+
+    textButton num1(20, 200, 30, 30, defaultButtonColor, std::string("1"), SDL_Color {0, 0, 0, 255}, mainFont, textAlign::CENTER, hoveredButtonColor);
 
     numericButtons.addButton(num1);
 
@@ -56,19 +59,17 @@ int main(int argc, char* argv[]) {
     operationButtons.loadAllText(mainRenderer);
 
     bool isRunning = true;
+    SDL_Event event;
 
     while (isRunning) {
-        SDL_Event event;
 		while (SDL_PollEvent(&event)) {
-			mainClass.processEvent(event, isRunning, numericButtons, operationButtons, functionButtons);			
+			mainClass.processEvent(mainRenderer, mainWindow, event, isRunning, numericButtons, operationButtons, functionButtons);			
 		}
-        numericButtons.renderAll(mainRenderer);
-		operationButtons.renderAll(mainRenderer);
-		functionButtons.renderAll(mainRenderer);
-        programWindow.renderWindow();
+        programWindow.renderWindow(numericButtons, operationButtons, functionButtons, mainRenderer,
+                                   displayBox, prevInputBox);
     }
     
-    mainClass.onQuit();
+    mainClass.onQuit(mainRenderer, mainWindow);
 
     return 0;
 }

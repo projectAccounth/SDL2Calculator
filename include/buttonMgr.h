@@ -2,8 +2,8 @@
 
 #ifndef BUTTON_MGR_H
 #define BUTTON_MGR_H
-#include "main.h"
 #include "button.h"
+#include "main.h"
 
 namespace mainProgram {
     class buttonManager {
