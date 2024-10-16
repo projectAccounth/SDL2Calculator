@@ -49,8 +49,31 @@ int main(int argc, char* argv[]) {
 
     std::cout << SDL_GetError() << "\n";
 
-    textButton num1(20, 120, 45, 45, defaultButtonColor, "1", SDL_Color {0, 0, 0, 255}, mainFont, CENTER, hoveredButtonColor);
-    textButton num2(85, 120, 45, 45, defaultButtonColor, "2", SDL_Color {0, 0, 0, 255}, mainFont, CENTER, hoveredButtonColor);
+    // First row numeric buttons
+    textButton num1(20, 120, 45, 45,
+                    defaultButtonColor, "1", SDL_Color {0, 0, 0, 255}, mainFont, CENTER, hoveredButtonColor);
+    textButton num2(2 * 20 + 45, 120, 45, 45,
+                    defaultButtonColor, "2", SDL_Color {0, 0, 0, 255}, mainFont, CENTER, hoveredButtonColor);
+    textButton num3(3 * 20 + 45 * 2, 120, 45, 45,
+                    defaultButtonColor, "3", SDL_Color {0, 0, 0, 255}, mainFont, CENTER, hoveredButtonColor);
+
+    // Second row
+
+    textButton num4(20, 120 + 45 + 20, 45, 45,
+                    defaultButtonColor, "4", SDL_Color {0, 0, 0, 255}, mainFont, CENTER, hoveredButtonColor);
+    textButton num5(2 * 20 + 45, 120 + 45 + 20, 45, 45,
+                    defaultButtonColor, "5", SDL_Color {0, 0, 0, 255}, mainFont, CENTER, hoveredButtonColor);
+    textButton num6(3 * 20 + 45 * 2, 120 + 45 + 20, 45, 45,
+                    defaultButtonColor, "6", SDL_Color {0, 0, 0, 255}, mainFont, CENTER, hoveredButtonColor);
+
+    // Third row
+
+    textButton num7(20, 120 + 45 * 2 + 20 * 2, 45, 45,
+                    defaultButtonColor, "7", SDL_Color {0, 0, 0, 255}, mainFont, CENTER, hoveredButtonColor);
+    textButton num8(2 * 20 + 45, 120 + 45 * 2 + 20 * 2, 45, 45,
+                    defaultButtonColor, "8", SDL_Color {0, 0, 0, 255}, mainFont, CENTER, hoveredButtonColor);
+    textButton num9(3 * 20 + 45 * 2, 120 + 45 * 2 + 20 * 2, 45, 45,
+                    defaultButtonColor, "9", SDL_Color {0, 0, 0, 255}, mainFont, CENTER, hoveredButtonColor);
 
     num1.setAction([&]() {
         std::string placeholderString(displayBox.text);
@@ -61,6 +84,13 @@ int main(int argc, char* argv[]) {
 
     numericButtons.addButton(num1);
     numericButtons.addButton(num2);
+    numericButtons.addButton(num3);
+    numericButtons.addButton(num4);
+    numericButtons.addButton(num5);
+    numericButtons.addButton(num6);
+    numericButtons.addButton(num7);
+    numericButtons.addButton(num8);
+    numericButtons.addButton(num9);
 
 
     numericButtons.loadAllText(mainRenderer);
