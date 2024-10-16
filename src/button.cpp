@@ -27,8 +27,8 @@ namespace mainProgram
         SDL_Color drawColor = hovered ? hoverColor : buttonColor; // using the barely-readable ternary operator to specify the color of the button
         SDL_SetRenderDrawColor(renderer, drawColor.r, drawColor.g, drawColor.b, drawColor.a);
         SDL_RenderFillRect(renderer, &buttonRect);
-        std::cout << SDL_GetError() << "whatever" << "\n";
-        std::cout << hovered << "\n";
+        // std::cout << SDL_GetError() << "whatever" << "\n";
+        // std::cout << hovered << "\n";
         if (textTexture != nullptr) {
             int textWidth, textHeight;
             // querying the texture to attempt to align the text
@@ -53,7 +53,7 @@ namespace mainProgram
                     textRect = { buttonRect.x + buttonRect.w - textWidth - 5, buttonRect.y + (buttonRect.h - textHeight) / 2, textWidth, textHeight };
                     break;
             }
-            std::cout << textRect.x << " " << textRect.y << " "<< textRect.w << " "<< textRect.h << " " << "\n";
+            // std::cout << textRect.x << " " << textRect.y << " "<< textRect.w << " "<< textRect.h << " " << "\n";
             SDL_RenderCopy(renderer, textTexture, nullptr, &textRect);
         }
     }
@@ -81,6 +81,7 @@ namespace mainProgram
     }
     void textButton::handleEvents(SDL_Event& e) {
         int x, y;
+        SDL_PumpEvents();
         SDL_GetMouseState(&x, &y);
 
         // Check for mouse motion or button down events
@@ -88,7 +89,9 @@ namespace mainProgram
             if (x > buttonRect.x && x < (buttonRect.x + buttonRect.w) &&
                 y > buttonRect.y && y < (buttonRect.y + buttonRect.h)) {
                 hovered = true;  // Mouse is over button
+                std::clog << "Hovering!" << "\n";
             } else {
+                std::clog << "No longer hovering!" << "\n";
                 hovered = false; // Mouse is not over button
             }
 

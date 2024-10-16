@@ -13,10 +13,7 @@ namespace mainProgram {
 		void onQuit(SDL_Renderer *renderer, SDL_Window *window);
 
 		void processEvent(SDL_Renderer *renderer, SDL_Window *window,
-							SDL_Event &event, bool isRunning,
-							buttonManager numericButtons,
-							buttonManager operationButtons,
-							buttonManager functionButtons);
+							SDL_Event &event, bool isRunning);
 	};
 }
 

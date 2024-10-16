@@ -20,27 +20,19 @@ namespace mainProgram {
 
 
     void Main::processEvent(SDL_Renderer *renderer, SDL_Window *window,
-							SDL_Event &event, bool isRunning,
-							buttonManager numericButtons,
-							buttonManager operationButtons,
-							buttonManager functionButtons) {
-		while (SDL_PollEvent(&event)) {
-			GetFrameEvents().push_back(event);
-			switch (event.type) {
-				case SDL_WINDOWEVENT_CLOSE: {
-					isRunning = false;
-					onQuit(renderer, window);
-					break;
-				}
-				case SDL_QUIT: {
-					isRunning = false;
-					onQuit(renderer, window);
-					break;
-				}
-			}	
-			numericButtons.handleEvents(event);
-			operationButtons.handleEvents(event);
-			functionButtons.handleEvents(event);
+							SDL_Event &event, bool isRunning) {
+		GetFrameEvents().push_back(event);
+		switch (event.type) {
+			case SDL_WINDOWEVENT_CLOSE: {
+				isRunning = false;
+				onQuit(renderer, window);
+				break;
+			}
+			case SDL_QUIT: {
+				isRunning = false;
+				onQuit(renderer, window);
+				break;
+			}
 		}
 	}
 }
