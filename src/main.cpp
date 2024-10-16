@@ -51,7 +51,7 @@ int main(int argc, char* argv[]) {
 
     std::cout << SDL_GetError() << "\n";
 
-    textButton num1(20, 200, 30, 30, defaultButtonColor, "1", SDL_Color {0, 0, 0, 255}, mainFont, CENTER, hoveredButtonColor);
+    textButton num1(20, 120, 45, 45, defaultButtonColor, "1", SDL_Color {0, 0, 0, 255}, mainFont, CENTER, hoveredButtonColor);
 
     num1.setAction([&]() {
         std::string placeholderString(displayBox.text);

@@ -32,9 +32,9 @@ public:
     void update(SDL_Renderer *renderer, const char* textToUpdate);
 
     ~textBox() {
-        if (textSurface != nullptr) {
-            SDL_FreeSurface(textSurface);
-        }
+        //if (textSurface != nullptr) {
+            //SDL_FreeSurface(textSurface);
+        //}
     }
 };
 
