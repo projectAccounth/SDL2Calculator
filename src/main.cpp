@@ -35,6 +35,8 @@ int main(int argc, char* argv[]) {
 
     TTF_Font *mainFont = TTF_OpenFont("./res/fonts/Amiko-Regular.ttf", 25);
 
+    std::cout << TTF_GetError() << "\n";
+
     mainWindow = programWindow.createWindow("Program", WINDOW_WIDTH, WINDOW_HEIGHT);
 
     mainRenderer = programWindow.createRenderer(mainWindow);
@@ -49,7 +51,14 @@ int main(int argc, char* argv[]) {
 
     std::cout << SDL_GetError() << "\n";
 
-    textButton num1(20, 200, 30, 30, defaultButtonColor, std::string("1"), SDL_Color {0, 0, 0, 255}, mainFont, textAlign::CENTER, hoveredButtonColor);
+    textButton num1(20, 200, 30, 30, defaultButtonColor, "1", SDL_Color {0, 0, 0, 255}, mainFont, CENTER, hoveredButtonColor);
+
+    num1.setAction([&]() {
+        std::string placeholderString(displayBox.text);
+        placeholderString += "1";
+        displayBox.text = placeholderString.c_str();
+        std::cout << placeholderString << "\s" << displayBox.text << "\n";
+    });
 
     numericButtons.addButton(num1);
 
@@ -65,8 +74,20 @@ int main(int argc, char* argv[]) {
 		while (SDL_PollEvent(&event)) {
 			mainClass.processEvent(mainRenderer, mainWindow, event, isRunning, numericButtons, operationButtons, functionButtons);			
 		}
-        programWindow.renderWindow(numericButtons, operationButtons, functionButtons, mainRenderer,
-                                   displayBox, prevInputBox);
+        // main color of the screen   
+        SDL_SetRenderDrawColor(mainRenderer, 128, 128, 128, 255);
+
+        SDL_RenderClear(mainRenderer);
+        // whatever that needs to be rendered go between RenderClear and RenderPresent
+
+        displayBox.render(mainRenderer);
+        prevInputBox.render(mainRenderer);
+
+        numericButtons.renderAll(mainRenderer);
+        functionButtons.renderAll(mainRenderer);
+        operationButtons.renderAll(mainRenderer);
+
+        SDL_RenderPresent(mainRenderer);
     }
     
     mainClass.onQuit(mainRenderer, mainWindow);

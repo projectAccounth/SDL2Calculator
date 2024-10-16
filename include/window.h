@@ -20,8 +20,6 @@ namespace mainProgram {
 
 		SDL_Renderer* createRenderer(SDL_Window *window);
 
-		void renderWindow(buttonManager gr1, buttonManager gr2, buttonManager gr3, SDL_Renderer *renderer, textBox box1, textBox box2);
-
 	};
 
 }

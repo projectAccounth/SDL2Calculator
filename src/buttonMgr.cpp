@@ -22,23 +22,8 @@ namespace mainProgram {
 
     void buttonManager::handleEvents(SDL_Event &e) {
         // checking whether you're moving the mouse or pressing the mouse
-        switch(e.type) {
-            case SDL_MOUSEBUTTONDOWN:
-            case SDL_MOUSEMOTION: {
-                int mouseX, mouseY;
-                // getting mouse state (x, y, ....)
-                SDL_GetMouseState(&mouseX, &mouseY);
-                // using the foreach-alike function with the : operator
-                for (auto &button : buttons) {
-                    button.checkHover(mouseX, mouseY);
-
-                    // checking whether it's a click or not
-                    if (e.type == SDL_MOUSEBUTTONDOWN) {
-                        std::cout << "Clicked" << "\n";
-                    }
-                }
-                break;
-            }
+        for(auto &button : buttons) {
+            button.handleEvents(e);
         }
     }
 }

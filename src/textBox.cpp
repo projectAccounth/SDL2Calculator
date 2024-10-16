@@ -21,6 +21,7 @@ namespace mainProgram {
         SDL_RenderFillRect(renderer, &textBoxRect);
         SDL_RenderCopy(renderer, textTexture, NULL, textRect);
         SDL_FreeSurface(textSurface);
+        SDL_DestroyTexture(textTexture);
     }
 
     void textBox::update(SDL_Renderer *renderer, const char* textToUpdate) {
