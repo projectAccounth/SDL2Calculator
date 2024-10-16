@@ -18,9 +18,9 @@ SDL_Color hoveredButtonColor = {155, 155, 155, 255};
 
 
 // corresponding button lists for those button types
-    buttonManager numericButtons;
-    buttonManager operationButtons;
-    buttonManager functionButtons;
+buttonManager numericButtons;
+buttonManager operationButtons;
+buttonManager functionButtons;
 
 int main(int argc, char* argv[]) {
     
@@ -39,8 +39,8 @@ int main(int argc, char* argv[]) {
 
     mainRenderer = programWindow.createRenderer(mainWindow);
 
-    textBox displayBox(SDL_Rect{20, 20, 275, 70}, SDL_Color{188, 188, 188, 255}, "Hello World!", SDL_Color{0, 0, 0, 255}, mainFont );
-    textBox prevInputBox(SDL_Rect{WINDOW_WIDTH - 20 - 80, 20, 80, 70}, SDL_Color{188, 188, 188, 255}, "h", SDL_Color{0, 0, 0, 255}, mainFont );
+    textBox displayBox(SDL_Rect{20, 20, 275, 70}, SDL_Color{188, 188, 188, 255}, "", SDL_Color{0, 0, 0, 255}, mainFont );
+    textBox prevInputBox(SDL_Rect{WINDOW_WIDTH - 20 - 80, 20, 80, 70}, SDL_Color{188, 188, 188, 255}, "sadhauid", SDL_Color{0, 0, 0, 255}, mainFont );
 
     if (mainFont == nullptr) {
         std::cout << SDL_GetError();
@@ -76,11 +76,59 @@ int main(int argc, char* argv[]) {
                     defaultButtonColor, "9", SDL_Color {0, 0, 0, 255}, mainFont, CENTER, hoveredButtonColor);
 
     num1.setAction([&]() {
-        std::string placeholderString(displayBox.text);
+        std::string placeholderString = displayBox.text;
         placeholderString.append("1");
-        displayBox.text = placeholderString.c_str();
-        std::cout << placeholderString << "\s" << displayBox.text << "\n";
+        displayBox.text = strdup(placeholderString.c_str());
     });
+
+    num2.setAction([&]() {
+        std::string placeholderString = displayBox.text;
+        placeholderString.append("2");
+        displayBox.text = strdup(placeholderString.c_str());
+    });
+
+    num3.setAction([&]() {
+        std::string placeholderString = displayBox.text;
+        placeholderString.append("3");
+        displayBox.text = strdup(placeholderString.c_str());
+    });
+
+    num4.setAction([&]() {
+        std::string placeholderString = displayBox.text;
+        placeholderString.append("4");
+        displayBox.text = strdup(placeholderString.c_str());
+    });
+
+    num5.setAction([&]() {
+        std::string placeholderString = displayBox.text;
+        placeholderString.append("5");
+        displayBox.text = strdup(placeholderString.c_str());
+    });
+
+    num6.setAction([&]() {
+        std::string placeholderString = displayBox.text;
+        placeholderString.append("6");
+        displayBox.text = strdup(placeholderString.c_str());
+    });   
+
+    num7.setAction([&]() {
+        std::string placeholderString = displayBox.text;
+        placeholderString.append("7");
+        displayBox.text = strdup(placeholderString.c_str());
+    });
+
+    num8.setAction([&]() {
+        std::string placeholderString = displayBox.text;
+        placeholderString.append("8");
+        displayBox.text = strdup(placeholderString.c_str());
+    });
+
+    num9.setAction([&]() {
+        std::string placeholderString = displayBox.text;
+        placeholderString.append("9");
+        displayBox.text = strdup(placeholderString.c_str());
+    });
+
 
     numericButtons.addButton(num1);
     numericButtons.addButton(num2);

@@ -7,7 +7,7 @@ namespace mainProgram
         if (textTexture != nullptr)
             SDL_DestroyTexture(textTexture); // destroy the texture to create a new one
 
-        SDL_Surface *textSurface = TTF_RenderText_Blended(textFont, text, textColor);
+        SDL_Surface *textSurface = TTF_RenderUTF8_Blended(textFont, text, textColor);
         if (textSurface == nullptr) {
             std::cerr << "Cannot create surface for text, error:" << TTF_GetError() << "\n";
             return;

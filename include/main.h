@@ -16,6 +16,8 @@
 #include <thread>
 #include <vector>
 #include <functional>
+#include <string>
+#include <cstring>
 
 using namespace std::chrono;
 using namespace std::this_thread;
