@@ -9,10 +9,7 @@ namespace mainProgram {
 
 class textBox {
 private:
-    
-
     TTF_Font* textFont;
-
     SDL_Surface *textSurface;
     SDL_Texture* textTexture;
 public:
@@ -23,7 +20,7 @@ public:
     textBox(SDL_Rect br, SDL_Color bc, std::string t, SDL_Color tc, TTF_Font* tf) :
         textBoxRect(br),
         boxColor(bc),
-        text(t.c_str()),
+        text(t),
         textColor(tc),
         textFont(tf) {}
     

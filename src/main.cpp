@@ -41,8 +41,8 @@ int main(int argc, char* argv[]) {
 
     mainRenderer = programWindow.createRenderer(mainWindow);
 
-    textBox displayBox(SDL_Rect{20, 20, 275, 70}, SDL_Color{188, 188, 188, 255}, "s", SDL_Color{0, 0, 0, 255}, mainFont);
-    textBox prevInputBox(SDL_Rect{WINDOW_WIDTH - 20 - 80, 20, 80, 70}, SDL_Color{188, 188, 188, 255}, "s", SDL_Color{0, 0, 0, 255}, mainFont);
+    textBox displayBox(SDL_Rect{20, 20, 275, 70}, SDL_Color{188, 188, 188, 255}, "", SDL_Color{0, 0, 0, 255}, mainFont);
+    textBox prevInputBox(SDL_Rect{WINDOW_WIDTH - 20 - 80, 20, 80, 70}, SDL_Color{188, 188, 188, 255}, "", SDL_Color{0, 0, 0, 255}, mainFont);
 
     if (mainFont == nullptr) {
         std::cout << SDL_GetError();
@@ -86,13 +86,13 @@ int main(int argc, char* argv[]) {
 
     // Numeric operation buttons
 
-    textButton add(WINDOW_WIDTH - 20, 120, 45, 45,
+    textButton add(WINDOW_WIDTH - 20 - 45, 120, 45, 45,
                     defaultButtonColor, "+", SDL_Color {0, 0, 0, 255}, mainFont, CENTER, hoveredButtonColor);
-    textButton sub(WINDOW_WIDTH - 20, 120 + (45 + 20), 45, 45,
+    textButton sub(WINDOW_WIDTH - 20 - 45, 120 + (45 + 20), 45, 45,
                     defaultButtonColor, "-", SDL_Color {0, 0, 0, 255}, mainFont, CENTER, hoveredButtonColor);
-    textButton mul(WINDOW_WIDTH - 20, 120 + (45 + 20) * 2, 45, 45,
+    textButton mul(WINDOW_WIDTH - 20 - 45, 120 + (45 + 20) * 2, 45, 45,
                     defaultButtonColor, "x", SDL_Color {0, 0, 0, 255}, mainFont, CENTER, hoveredButtonColor);
-    textButton div(WINDOW_WIDTH - 20, 120 + (45 + 20) * 3, 45, 45,
+    textButton div(WINDOW_WIDTH - 20 - 45, 120 + (45 + 20) * 3, 45, 45,
                     defaultButtonColor, "/", SDL_Color {0, 0, 0, 255}, mainFont, CENTER, hoveredButtonColor);
 
     num1.setAction([&]() {
