@@ -18,12 +18,12 @@ private:
 public:
     SDL_Rect textBoxRect;
     SDL_Color boxColor;
-    const char* text;
+    std::string text;
     SDL_Color textColor;
-    textBox(SDL_Rect br, SDL_Color bc, const char* t, SDL_Color tc, TTF_Font* tf) :
+    textBox(SDL_Rect br, SDL_Color bc, std::string t, SDL_Color tc, TTF_Font* tf) :
         textBoxRect(br),
         boxColor(bc),
-        text(t),
+        text(t.c_str()),
         textColor(tc),
         textFont(tf) {}
     

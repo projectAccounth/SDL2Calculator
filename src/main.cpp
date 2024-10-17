@@ -22,6 +22,8 @@ buttonManager numericButtons;
 buttonManager operationButtons;
 buttonManager functionButtons;
 
+const char* emptyStr = "";
+
 int main(int argc, char* argv[]) {
     
     Main mainClass;
@@ -31,7 +33,7 @@ int main(int argc, char* argv[]) {
     SDL_Init(SDL_INIT_EVERYTHING);
     TTF_Init();
 
-    TTF_Font *mainFont = TTF_OpenFont("./res/fonts/Amiko-Regular.ttf", 30);
+    TTF_Font *mainFont = TTF_OpenFont("./res/fonts/micross.ttf", 30);
 
     std::cout << TTF_GetError() << "\n";
 
@@ -39,8 +41,8 @@ int main(int argc, char* argv[]) {
 
     mainRenderer = programWindow.createRenderer(mainWindow);
 
-    textBox displayBox(SDL_Rect{20, 20, 275, 70}, SDL_Color{188, 188, 188, 255}, "", SDL_Color{0, 0, 0, 255}, mainFont );
-    textBox prevInputBox(SDL_Rect{WINDOW_WIDTH - 20 - 80, 20, 80, 70}, SDL_Color{188, 188, 188, 255}, "sadhauid", SDL_Color{0, 0, 0, 255}, mainFont );
+    textBox displayBox(SDL_Rect{20, 20, 275, 70}, SDL_Color{188, 188, 188, 255}, "s", SDL_Color{0, 0, 0, 255}, mainFont);
+    textBox prevInputBox(SDL_Rect{WINDOW_WIDTH - 20 - 80, 20, 80, 70}, SDL_Color{188, 188, 188, 255}, "s", SDL_Color{0, 0, 0, 255}, mainFont);
 
     if (mainFont == nullptr) {
         std::cout << SDL_GetError();
@@ -74,6 +76,24 @@ int main(int argc, char* argv[]) {
                     defaultButtonColor, "8", SDL_Color {0, 0, 0, 255}, mainFont, CENTER, hoveredButtonColor);
     textButton num9(3 * 20 + 45 * 2, 120 + 45 * 2 + 20 * 2, 45, 45,
                     defaultButtonColor, "9", SDL_Color {0, 0, 0, 255}, mainFont, CENTER, hoveredButtonColor);
+
+    // Fourth row function + operation buttons
+
+    textButton backSpace(20, 120 + (45 + 20) * 3, 77, 45,
+                         defaultButtonColor, "Del", SDL_Color {0, 0, 0, 255}, mainFont, CENTER, hoveredButtonColor);
+    textButton negate(20 * 2 + 77, 120 + (45 + 20) * 3, 78, 45,
+                         defaultButtonColor, "+/-", SDL_Color {0, 0, 0, 255}, mainFont, CENTER, hoveredButtonColor);
+
+    // Numeric operation buttons
+
+    textButton add(WINDOW_WIDTH - 20, 120, 45, 45,
+                    defaultButtonColor, "+", SDL_Color {0, 0, 0, 255}, mainFont, CENTER, hoveredButtonColor);
+    textButton sub(WINDOW_WIDTH - 20, 120 + (45 + 20), 45, 45,
+                    defaultButtonColor, "-", SDL_Color {0, 0, 0, 255}, mainFont, CENTER, hoveredButtonColor);
+    textButton mul(WINDOW_WIDTH - 20, 120 + (45 + 20) * 2, 45, 45,
+                    defaultButtonColor, "x", SDL_Color {0, 0, 0, 255}, mainFont, CENTER, hoveredButtonColor);
+    textButton div(WINDOW_WIDTH - 20, 120 + (45 + 20) * 3, 45, 45,
+                    defaultButtonColor, "/", SDL_Color {0, 0, 0, 255}, mainFont, CENTER, hoveredButtonColor);
 
     num1.setAction([&]() {
         std::string placeholderString = displayBox.text;
@@ -140,10 +160,20 @@ int main(int argc, char* argv[]) {
     numericButtons.addButton(num8);
     numericButtons.addButton(num9);
 
+    functionButtons.addButton(backSpace);
+
+
+    operationButtons.addButton(add);
+    operationButtons.addButton(sub);
+    operationButtons.addButton(mul);
+    operationButtons.addButton(div);
+    operationButtons.addButton(negate);
 
     numericButtons.loadAllText(mainRenderer);
     functionButtons.loadAllText(mainRenderer);
     operationButtons.loadAllText(mainRenderer);
+
+    std::cout << SDL_GetError() << "\n";
 
     bool isRunning = true;
     SDL_Event event;

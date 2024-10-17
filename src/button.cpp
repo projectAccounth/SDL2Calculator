@@ -23,8 +23,14 @@ namespace mainProgram
     }
 
     void textButton::render(SDL_Renderer *renderer) {
+        if (!isVisible()) {
+            return;
+        }
         // set the color to draw for the button and also set the settings to render the button
         SDL_Color drawColor = hovered ? hoverColor : buttonColor; // using the barely-readable ternary operator to specify the color of the button
+        if (!active) {
+            drawColor = hoverColor;
+        }
         SDL_SetRenderDrawColor(renderer, drawColor.r, drawColor.g, drawColor.b, drawColor.a);
         SDL_RenderFillRect(renderer, &buttonRect);
         // std::cout << SDL_GetError() << "whatever" << "\n";
@@ -85,7 +91,7 @@ namespace mainProgram
         SDL_GetMouseState(&x, &y);
 
         // Check for mouse motion or button down events
-        if (e.type == SDL_MOUSEMOTION || e.type == SDL_MOUSEBUTTONDOWN) {
+        if (e.type == SDL_MOUSEMOTION || e.type == SDL_MOUSEBUTTONDOWN && active) {
             if (x > buttonRect.x && x < (buttonRect.x + buttonRect.w) &&
                 y > buttonRect.y && y < (buttonRect.y + buttonRect.h)) {
                 hovered = true;  // Mouse is over button
@@ -96,7 +102,7 @@ namespace mainProgram
             }
 
             // If mouse is clicked while hovering
-            if (e.type == SDL_MOUSEBUTTONDOWN && hovered) {
+            if (e.type == SDL_MOUSEBUTTONDOWN && hovered && active) {
                 if (buttonAction) {
                     buttonAction();  // Execute the button action
                 }

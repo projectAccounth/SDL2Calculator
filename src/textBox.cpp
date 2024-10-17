@@ -4,7 +4,7 @@ namespace mainProgram {
     void textBox::render(SDL_Renderer *renderer) {
         // as TTF_RenderText_Solid could only be used on
         // SDL_Surface then you have to create the surface first
-        textSurface = TTF_RenderText_Blended(textFont, text, textColor); 
+        textSurface = TTF_RenderText_Blended(textFont, text.c_str(), textColor); 
 
         // now you can convert it into a texture
         SDL_Texture* textTexture = SDL_CreateTextureFromSurface(renderer, textSurface);
