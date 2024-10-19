@@ -2,3 +2,5 @@
 build
 clog.txt
 build.sh
+obj
+debug
