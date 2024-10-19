@@ -25,4 +25,15 @@ using namespace std::this_thread;
 #define WINDOW_WIDTH 400
 #define WINDOW_HEIGHT 500
 
+namespace mainProgram {
+    enum CURRENT_FUNCTION {
+        NONE,
+        SQRT,
+        SIN, ASIN,
+        COS, ACOS,
+        TAN, ATAN,
+        RAND,
+    };
+}
+
 #endif /* MAINHDR_H */
