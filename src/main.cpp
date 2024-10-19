@@ -41,8 +41,8 @@ int main(int argc, char* argv[]) {
 
     mainRenderer = programWindow.createRenderer(mainWindow);
 
-    textBox displayBox(SDL_Rect{20, 20, 275, 70}, SDL_Color{188, 188, 188, 255}, "", SDL_Color{0, 0, 0, 255}, mainFont);
-    textBox prevInputBox(SDL_Rect{WINDOW_WIDTH - 20 - 80, 20, 80, 70}, SDL_Color{188, 188, 188, 255}, "", SDL_Color{0, 0, 0, 255}, mainFont);
+    textBox displayBox(SDL_Rect{20, 20, 360, 70}, SDL_Color{188, 188, 188, 255}, "", SDL_Color{0, 0, 0, 255}, mainFont);
+    //textBox prevInputBox(SDL_Rect{WINDOW_WIDTH - 20 - 80, 20, 80, 70}, SDL_Color{188, 188, 188, 255}, "", SDL_Color{0, 0, 0, 255}, mainFont);
 
     if (mainFont == nullptr) {
         std::cout << SDL_GetError();
@@ -149,6 +149,14 @@ int main(int argc, char* argv[]) {
         displayBox.text = strdup(placeholderString.c_str());
     });
 
+    backSpace.setAction([&]() {
+        std::string placeholderString = displayBox.text;
+        if (!placeholderString.empty()) {
+            placeholderString.pop_back();
+            displayBox.text = strdup(placeholderString.c_str());
+        }
+    });
+
 
     numericButtons.addButton(num1);
     numericButtons.addButton(num2);
@@ -180,7 +188,7 @@ int main(int argc, char* argv[]) {
 
     while (isRunning) {
 		while (SDL_PollEvent(&event)) {
-			mainClass.processEvent(mainRenderer, mainWindow, event, isRunning);
+			mainClass.processEvent(mainRenderer, mainWindow, event, isRunning, mainFont);
             numericButtons.handleEvents(event);
 			operationButtons.handleEvents(event);
 			functionButtons.handleEvents(event);
@@ -192,7 +200,7 @@ int main(int argc, char* argv[]) {
         // whatever that needs to be rendered go between RenderClear and RenderPresent
 
         displayBox.render(mainRenderer);
-        prevInputBox.render(mainRenderer);
+        //prevInputBox.render(mainRenderer);
 
         numericButtons.renderAll(mainRenderer);
         functionButtons.renderAll(mainRenderer);
@@ -201,7 +209,7 @@ int main(int argc, char* argv[]) {
         SDL_RenderPresent(mainRenderer);
     }
     
-    mainClass.onQuit(mainRenderer, mainWindow);
+    mainClass.onQuit(mainRenderer, mainWindow, mainFont);
 
     return 0;
 }
