@@ -30,6 +30,10 @@ int main(int argc, char* argv[]) {
 
     Window programWindow;
 
+    int temporaryValue1 = 0, temporaryValue2 = 0;
+
+    CURRENT_FUNCTION currentFunction = NONE;
+
     SDL_Init(SDL_INIT_EVERYTHING);
     TTF_Init();
 
@@ -153,6 +157,23 @@ int main(int argc, char* argv[]) {
         std::string placeholderString = displayBox.text;
         if (!placeholderString.empty()) {
             placeholderString.pop_back();
+            displayBox.text = strdup(placeholderString.c_str());
+        }
+    });
+
+    negate.setAction([&]() {
+        std::string placeholderString = displayBox.text;
+        if (!placeholderString.empty() && currentFunction == NONE) {
+            try {
+                if (placeholderString.at(0) == '-') {
+                    placeholderString.erase(0,1);
+                } else {
+                    placeholderString.insert(0, 1, '-');
+                }
+            }
+            catch (const std::out_of_range& e) {
+                std::cerr << "Out of range error: " << e.what() << std::endl;
+            }
             displayBox.text = strdup(placeholderString.c_str());
         }
     });
