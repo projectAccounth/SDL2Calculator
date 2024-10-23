@@ -213,7 +213,27 @@ int main(int argc, char* argv[]) {
     });
 
     equal.setAction([&]() {
-
+        std::string placeholderString = displayBox.text;
+        switch (currentOperation) {
+            case NONE:
+                break;
+            case ADD: {
+                break;
+            }
+            case SUB: {
+                break;
+            }
+            case MUL: {
+                break;
+            }
+            case DIV: {
+                break;
+            }
+        }
+        switch (currentFunction) {
+            case NONE:
+                break;
+        }
     });
 
 
