@@ -35,7 +35,7 @@ namespace mainProgram {
         RAND,
     };
     enum CURRENT_OPERATION {
-        NONE,
+        NOOP,
         ADD, SUB,
         MUL, DIV
     };
