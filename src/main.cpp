@@ -31,9 +31,11 @@ int main(int argc, char* argv[]) {
 
     Window programWindow;
 
-    int temporaryValue1 = 0, temporaryValue2 = 0;
+    long double temporaryValue1 = 0, temporaryValue2 = 0;
 
     CURRENT_FUNCTION currentFunction = NONE;
+
+    CURRENT_OPERATION currentOperation = NOOP;
 
     SDL_Init(SDL_INIT_EVERYTHING);
     TTF_Init();
@@ -182,6 +184,36 @@ int main(int argc, char* argv[]) {
             }
             displayBox.text = strdup(placeholderString.c_str());
         }
+    });
+
+    add.setAction([&]() {
+        std::string placeholderString = displayBox.text;
+        if (!placeholderString.empty()) {
+            try {
+                std::stold(placeholderString);
+            }
+            catch (const std::exception &e) {
+                return;
+            }
+            
+            if (currentOperation == ADD && temporaryValue1 != 0) {
+                temporaryValue2 = temporaryValue1 + std::stold(placeholderString);
+                currentOperation = NOOP;
+                displayBox.text = strdup(std::to_string(temporaryValue2).c_str());
+                temporaryValue2 = 0;
+                return;
+            }
+
+            currentOperation = ADD;
+
+            if (temporaryValue1 == 0)
+                temporaryValue1 = std::stold(placeholderString);
+        }
+        displayBox.text = "";
+    });
+
+    equal.setAction([&]() {
+
     });
 
 
