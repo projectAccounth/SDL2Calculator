@@ -109,4 +109,12 @@ namespace mainProgram
             }
         }
     }
+
+    void textButton::toggleActive() {
+        if (active) {
+            active = false;
+            return;
+        }
+        active = true;
+    }
 } // namespace mainProgram

@@ -65,6 +65,8 @@ namespace mainProgram
 
         void handleEvents(SDL_Event &event);
 
+        void toggleActive();
+
         // destructor for the class
         ~textButton() {
             //if (textTexture != nullptr)
