@@ -27,9 +27,9 @@ namespace mainProgram {
         }
     }
 
-    void buttonManager::toggleAllActive() {
+    void buttonManager::toggleAllActive(bool value) {
         for (auto &button : buttons) {
-            button.toggleActive();
+            button.toggleActive(value);
         }
     }
 }

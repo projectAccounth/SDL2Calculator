@@ -110,11 +110,7 @@ namespace mainProgram
         }
     }
 
-    void textButton::toggleActive() {
-        if (active) {
-            active = false;
-            return;
-        }
-        active = true;
+    void textButton::toggleActive(bool value) {
+        active = value;
     }
 } // namespace mainProgram

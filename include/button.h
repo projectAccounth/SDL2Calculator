@@ -65,7 +65,7 @@ namespace mainProgram
 
         void handleEvents(SDL_Event &event);
 
-        void toggleActive();
+        void toggleActive(bool value);
 
         // destructor for the class
         ~textButton() {
