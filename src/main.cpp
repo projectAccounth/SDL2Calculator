@@ -107,6 +107,12 @@ int main(int argc, char* argv[]) {
     textButton equal(WINDOW_WIDTH - 20 - 70, 120 + (45 + 20) * 4, 70, 45,
                         defaultButtonColor, "=", SDL_Color {0, 0, 0, 255}, mainFont, CENTER, hoveredButtonColor);
 
+    // CLEAR && ALL_CLEAR (C && AC)
+
+    textButton clear();
+
+    textButton allClear();
+
     num1.setAction([&]() {
         std::string placeholderString = displayBox.text;
         placeholderString.append("1");
@@ -186,6 +192,87 @@ int main(int argc, char* argv[]) {
         }
     });
 
+    sub.setAction([&]() {
+        std::string placeholderString = displayBox.text;
+        if (!placeholderString.empty()) {
+            try {
+                std::stold(placeholderString);
+            }
+            catch (const std::exception &e) {
+                return;
+            }
+            
+            if (currentOperation == SUB && temporaryValue1 != 0) {
+                temporaryValue2 = temporaryValue1 + std::stold(placeholderString);
+                currentOperation = NOOP;
+                displayBox.text = strdup(std::to_string(temporaryValue2).c_str());
+                temporaryValue1 = temporaryValue2;
+                temporaryValue2 = 0;
+                return;
+            }
+
+            currentOperation = SUB;
+
+            if (temporaryValue1 == 0)
+                temporaryValue1 = std::stold(placeholderString);
+        }
+        displayBox.text = "";
+    });
+
+    mul.setAction([&]() {
+        std::string placeholderString = displayBox.text;
+        if (!placeholderString.empty()) {
+            try {
+                std::stold(placeholderString);
+            }
+            catch (const std::exception &e) {
+                return;
+            }
+            
+            if (currentOperation == MUL && temporaryValue1 != 0) {
+                temporaryValue2 = temporaryValue1 + std::stold(placeholderString);
+                currentOperation = NOOP;
+                displayBox.text = strdup(std::to_string(temporaryValue2).c_str());
+                temporaryValue1 = temporaryValue2;
+                temporaryValue2 = 0;
+                return;
+            }
+
+            currentOperation = MUL;
+
+            if (temporaryValue1 == 0)
+                temporaryValue1 = std::stold(placeholderString);
+        }
+        displayBox.text = "";
+    });
+
+    div.setAction([&]() {
+        std::string placeholderString = displayBox.text;
+        if (!placeholderString.empty()) {
+            try {
+                std::stold(placeholderString);
+            }
+            catch (const std::exception &e) {
+                return;
+            }
+            
+            if (currentOperation == DIV && temporaryValue1 != 0) {
+                temporaryValue2 = temporaryValue1 + std::stold(placeholderString);
+                currentOperation = NOOP;
+                displayBox.text = strdup(std::to_string(temporaryValue2).c_str());
+                temporaryValue1 = temporaryValue2;
+                temporaryValue2 = 0;
+                return;
+            }
+
+            currentOperation = DIV;
+
+            if (temporaryValue1 == 0)
+                temporaryValue1 = std::stold(placeholderString);
+        }
+        displayBox.text = "";
+    });
+
     add.setAction([&]() {
         std::string placeholderString = displayBox.text;
         if (!placeholderString.empty()) {
@@ -200,6 +287,7 @@ int main(int argc, char* argv[]) {
                 temporaryValue2 = temporaryValue1 + std::stold(placeholderString);
                 currentOperation = NOOP;
                 displayBox.text = strdup(std::to_string(temporaryValue2).c_str());
+                temporaryValue1 = temporaryValue2;
                 temporaryValue2 = 0;
                 return;
             }
