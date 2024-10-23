@@ -34,6 +34,11 @@ namespace mainProgram {
         TAN, ATAN,
         RAND,
     };
+    enum CURRENT_OPERATION {
+        NONE,
+        ADD, SUB,
+        MUL, DIV
+    };
 }
 
 #endif /* MAINHDR_H */
