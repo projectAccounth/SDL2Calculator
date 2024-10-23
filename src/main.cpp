@@ -109,9 +109,11 @@ int main(int argc, char* argv[]) {
 
     // CLEAR && ALL_CLEAR (C && AC)
 
-    textButton clear();
+    textButton clear(3 * 20 + 45 * 2 + 60, 120, 60, 45,
+                        defaultButtonColor, "C", SDL_Color {0, 0, 0, 255}, mainFont, CENTER, hoveredButtonColor);
 
-    textButton allClear();
+    textButton allClear(3 * 20 + 45 * 2 + 60, 120 + 45 + 20, 60, 45,
+                        defaultButtonColor, "AC", SDL_Color {0, 0, 0, 255}, mainFont, CENTER, hoveredButtonColor);
 
     num1.setAction([&]() {
         std::string placeholderString = displayBox.text;
@@ -173,6 +175,20 @@ int main(int argc, char* argv[]) {
             placeholderString.pop_back();
             displayBox.text = strdup(placeholderString.c_str());
         }
+    });
+
+    allClear.setAction([&]() {
+        displayBox.text = "";
+        temporaryValue1 = NULL;
+        temporaryValue2 = NULL;
+        numericButtons.toggleAllActive(true);
+        functionButtons.toggleAllActive(true);
+        operationButtons.toggleAllActive(true);
+        specialButtons.toggleAllActive(true);
+    });
+
+    clear.setAction([&]() {
+        displayBox.text = "";
     });
 
     negate.setAction([&]() {
@@ -350,8 +366,10 @@ int main(int argc, char* argv[]) {
     numericButtons.addButton(num9);
 
     functionButtons.addButton(backSpace);
+    functionButtons.addButton(clear);
 
     specialButtons.addButton(equal);
+    specialButtons.addButton(allClear);
 
     operationButtons.addButton(add);
     operationButtons.addButton(sub);
