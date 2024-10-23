@@ -20,6 +20,8 @@ namespace mainProgram {
 
         // event handling for buttons
         void handleEvents(SDL_Event &e);
+
+        void toggleAllActive();
     };
 }
 

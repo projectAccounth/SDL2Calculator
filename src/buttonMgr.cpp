@@ -26,4 +26,10 @@ namespace mainProgram {
             button.handleEvents(e);
         }
     }
+
+    void buttonManager::toggleAllActive() {
+        for (auto &button : buttons) {
+            button.toggleActive();
+        }
+    }
 }
