@@ -21,6 +21,7 @@ SDL_Color hoveredButtonColor = {155, 155, 155, 255};
 buttonManager numericButtons;
 buttonManager operationButtons;
 buttonManager functionButtons;
+buttonManager specialButtons;
 
 const char* emptyStr = "";
 
@@ -98,6 +99,11 @@ int main(int argc, char* argv[]) {
                     defaultButtonColor, "x", SDL_Color {0, 0, 0, 255}, mainFont, CENTER, hoveredButtonColor);
     textButton div(WINDOW_WIDTH - 20 - 45, 120 + (45 + 20) * 3, 45, 45,
                     defaultButtonColor, "/", SDL_Color {0, 0, 0, 255}, mainFont, CENTER, hoveredButtonColor);
+
+    // EQUAL
+    
+    textButton equal(WINDOW_WIDTH - 20 - 70, 120 + (45 + 20) * 4, 70, 45,
+                        defaultButtonColor, "=", SDL_Color {0, 0, 0, 255}, mainFont, CENTER, hoveredButtonColor);
 
     num1.setAction([&]() {
         std::string placeholderString = displayBox.text;
@@ -191,6 +197,7 @@ int main(int argc, char* argv[]) {
 
     functionButtons.addButton(backSpace);
 
+    specialButtons.addButton(equal);
 
     operationButtons.addButton(add);
     operationButtons.addButton(sub);
@@ -201,6 +208,7 @@ int main(int argc, char* argv[]) {
     numericButtons.loadAllText(mainRenderer);
     functionButtons.loadAllText(mainRenderer);
     operationButtons.loadAllText(mainRenderer);
+    specialButtons.loadAllText(mainRenderer);
 
     std::cout << SDL_GetError() << "\n";
 
@@ -213,6 +221,7 @@ int main(int argc, char* argv[]) {
             numericButtons.handleEvents(event);
 			operationButtons.handleEvents(event);
 			functionButtons.handleEvents(event);
+            specialButtons.handleEvents(event);
 		}
         // main color of the screen   
         SDL_SetRenderDrawColor(mainRenderer, 128, 128, 128, 255);
@@ -226,6 +235,7 @@ int main(int argc, char* argv[]) {
         numericButtons.renderAll(mainRenderer);
         functionButtons.renderAll(mainRenderer);
         operationButtons.renderAll(mainRenderer);
+        specialButtons.renderAll(mainRenderer);
 
         SDL_RenderPresent(mainRenderer);
     }
