@@ -31,7 +31,7 @@ int main(int argc, char* argv[]) {
 
     Window programWindow;
 
-    long double temporaryValue1 = 0, temporaryValue2 = 0;
+    long double temporaryValue1 = NULL, temporaryValue2 = NULL;
 
     CURRENT_FUNCTION currentFunction = NONE;
 
@@ -214,19 +214,31 @@ int main(int argc, char* argv[]) {
 
     equal.setAction([&]() {
         std::string placeholderString = displayBox.text;
+        long double placeholderNum = std::stold(placeholderString);
+        if (temporaryValue1 == NULL) {
+            return;
+        }
         switch (currentOperation) {
-            case NONE:
+            case NOOP:
                 break;
             case ADD: {
+                currentOperation = NOOP;
+                placeholderNum += temporaryValue1;
                 break;
             }
             case SUB: {
+                currentOperation = NOOP;
+                placeholderNum -= temporaryValue1;
                 break;
             }
             case MUL: {
+                currentOperation = NOOP;
+                placeholderNum *= temporaryValue1;
                 break;
             }
             case DIV: {
+                currentOperation = NOOP;
+                placeholderNum /= temporaryValue1;
                 break;
             }
         }
@@ -234,6 +246,8 @@ int main(int argc, char* argv[]) {
             case NONE:
                 break;
         }
+        displayBox.text = std::to_string(placeholderNum);
+        temporaryValue1 = NULL;
     });
 
 
