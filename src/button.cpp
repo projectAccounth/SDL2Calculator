@@ -95,16 +95,19 @@ namespace mainProgram
             if (x > buttonRect.x && x < (buttonRect.x + buttonRect.w) &&
                 y > buttonRect.y && y < (buttonRect.y + buttonRect.h)) {
                 hovered = true;  // Mouse is over button
-                std::clog << "Hovering!" << "\n";
+                // std::clog << "Hovering!" << "\n";
             } else {
-                std::clog << "No longer hovering!" << "\n";
+                // std::clog << "No longer hovering!" << "\n";
                 hovered = false; // Mouse is not over button
             }
 
             // If mouse is clicked while hovering
             if (e.type == SDL_MOUSEBUTTONDOWN && hovered && active) {
                 if (buttonAction) {
-                    buttonAction();  // Execute the button action
+                    std::cout << "Button clicked!" << std::endl;
+                    buttonAction();
+                } else {
+                    std::cout << "No action assigned!" << std::endl;
                 }
             }
         }

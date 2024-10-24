@@ -12,8 +12,7 @@ namespace mainProgram {
 	public:
 		void onQuit(SDL_Renderer *renderer, SDL_Window *window, TTF_Font *font);
 
-		void processEvent(SDL_Renderer *renderer, SDL_Window *window,
-							SDL_Event &event, bool isRunning, TTF_Font *font);
+		bool processEvent(SDL_Event &event);
 	};
 }
 

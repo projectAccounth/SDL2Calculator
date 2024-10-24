@@ -21,20 +21,19 @@ namespace mainProgram {
 	}
 
 
-    void Main::processEvent(SDL_Renderer *renderer, SDL_Window *window,
-							SDL_Event &event, bool isRunning, TTF_Font *font) {
+    bool Main::processEvent(SDL_Event &event) {
+		bool isRunning = true;
 		GetFrameEvents().push_back(event);
 		switch (event.type) {
 			case SDL_WINDOWEVENT_CLOSE: {
 				isRunning = false;
-				onQuit(renderer, window, font);
 				break;
 			}
 			case SDL_QUIT: {
 				isRunning = false;
-				onQuit(renderer, window, font);
 				break;
 			}
 		}
+		return isRunning;
 	}
 }

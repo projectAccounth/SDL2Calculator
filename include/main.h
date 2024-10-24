@@ -18,12 +18,15 @@
 #include <functional>
 #include <string>
 #include <cstring>
+#include <utility>
+#include <iomanip>
+#include <cmath>
 
 using namespace std::chrono;
 using namespace std::this_thread;
 
-#define WINDOW_WIDTH 400
-#define WINDOW_HEIGHT 500
+#define WINDOW_WIDTH 355
+#define WINDOW_HEIGHT 380
 
 namespace mainProgram {
     enum CURRENT_FUNCTION {

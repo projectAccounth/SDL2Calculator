@@ -16,26 +16,26 @@ SDL_Renderer *mainRenderer = NULL;
 SDL_Color defaultButtonColor = {188, 188, 188, 255};
 SDL_Color hoveredButtonColor = {155, 155, 155, 255};
 
-
 // corresponding button lists for those button types
 buttonManager numericButtons;
 buttonManager operationButtons;
 buttonManager functionButtons;
 buttonManager specialButtons;
 
-const char* emptyStr = "";
 
 int main(int argc, char* argv[]) {
-    
-    Main mainClass;
 
-    Window programWindow;
+    std::cout << std::defaultfloat;
+    std::cout << std::setprecision(8);
 
     long double temporaryValue1 = NULL, temporaryValue2 = NULL;
 
     CURRENT_FUNCTION currentFunction = NONE;
-
     CURRENT_OPERATION currentOperation = NOOP;
+    
+    Main mainClass;
+
+    Window programWindow;
 
     SDL_Init(SDL_INIT_EVERYTHING);
     TTF_Init();
@@ -48,13 +48,102 @@ int main(int argc, char* argv[]) {
 
     mainRenderer = programWindow.createRenderer(mainWindow);
 
-    textBox displayBox(SDL_Rect{20, 20, 360, 70}, SDL_Color{188, 188, 188, 255}, "", SDL_Color{0, 0, 0, 255}, mainFont);
+    textBox displayBox(SDL_Rect{20, 20, 315, 70}, SDL_Color{188, 188, 188, 255}, "", SDL_Color{0, 0, 0, 255}, mainFont);
+    textBox currentOpBox(SDL_Rect{315 - 12, 20 + 10, 20, 20}, SDL_Color{188, 188, 188, 0}, "N", SDL_Color{0, 0, 0, 255}, mainFont);
     //textBox prevInputBox(SDL_Rect{WINDOW_WIDTH - 20 - 80, 20, 80, 70}, SDL_Color{188, 188, 188, 255}, "", SDL_Color{0, 0, 0, 255}, mainFont);
 
     if (mainFont == nullptr) {
         std::cout << SDL_GetError();
         return -1;
     }
+
+    // functions for binding
+    std::function<void(std::string)> numericButtonHandling = [&](std::string str) {
+        std::string placeholderString = displayBox.text;
+        placeholderString.append(str);
+        displayBox.text = strdup(placeholderString.c_str());
+    };
+
+    std::function<void(CURRENT_OPERATION)> operationButtonHandling = [&](CURRENT_OPERATION op) {
+        std::string placeholderString = displayBox.text;
+        if (!placeholderString.empty()) {
+            try {
+                std::stold(placeholderString);
+            }
+            catch (const std::invalid_argument &e) {
+                displayBox.text = "SYNTAX ERROR";
+                numericButtons.toggleAllActive(false);
+                functionButtons.toggleAllActive(false);
+                operationButtons.toggleAllActive(false);
+                return;
+            }
+
+            if (temporaryValue1 != NULL) {
+                switch(op) {
+                    case NOOP:
+                        break;
+                    case ADD: {
+                        temporaryValue2 = temporaryValue1 + std::stold(placeholderString);
+                        currentOperation = NOOP;
+                        displayBox.text = strdup(std::to_string(temporaryValue2).c_str());
+                        temporaryValue1 = NULL;
+                        temporaryValue2 = NULL;
+                        return;
+                    }
+                    case SUB: {
+                        temporaryValue2 = temporaryValue1 - std::stold(placeholderString);
+                        currentOperation = NOOP;
+                        displayBox.text = strdup(std::to_string(temporaryValue2).c_str());
+                        temporaryValue1 = NULL;
+                        temporaryValue2 = NULL;
+                        return;
+                    }
+                    case MUL: {
+                        temporaryValue2 = temporaryValue1 * std::stold(placeholderString);
+                        currentOperation = NOOP;
+                        displayBox.text = strdup(std::to_string(temporaryValue2).c_str());
+                        temporaryValue1 = NULL;
+                        temporaryValue2 = NULL;
+                        return;
+                    }
+                    case DIV: {
+                        temporaryValue2 = temporaryValue1 / std::stold(placeholderString);
+                        currentOperation = NOOP;
+                        displayBox.text = strdup(std::to_string(temporaryValue2).c_str());
+                        temporaryValue1 = NULL;
+                        temporaryValue2 = NULL;
+                        return;
+                    }
+                }
+                currentOpBox.text = "N";
+            }
+            currentOperation = op;
+            
+            switch (op) {
+                case NOOP:
+                    currentOpBox.text = "N";
+                    break;
+                case ADD:
+                    currentOpBox.text = "+";
+                    break;
+                case SUB:
+                    currentOpBox.text = "-";
+                    break;
+                case MUL:
+                    currentOpBox.text = "*";
+                    break;
+                case DIV:
+                    currentOpBox.text = "/";
+                    break;
+            }
+
+            if (temporaryValue1 == NULL) {
+                temporaryValue1 = std::stold(placeholderString);
+                std::cout << "Assigned " << temporaryValue1 << "\n";
+            }
+        }
+        displayBox.text = "";
+    };
 
     std::cout << SDL_GetError() << "\n";
 
@@ -84,6 +173,11 @@ int main(int argc, char* argv[]) {
     textButton num9(3 * 20 + 45 * 2, 120 + 45 * 2 + 20 * 2, 45, 45,
                     defaultButtonColor, "9", SDL_Color {0, 0, 0, 255}, mainFont, CENTER, hoveredButtonColor);
 
+    // Additional buttons
+
+    textButton point(3 * 20 + 45 * 2 + 60, 120 + (45 + 20) * 2, 60, 45,
+                    defaultButtonColor, ".", SDL_Color {0, 0, 0, 255}, mainFont, CENTER, hoveredButtonColor);
+
     // Fourth row function + operation buttons
 
     textButton backSpace(20, 120 + (45 + 20) * 3, 77, 45,
@@ -104,70 +198,27 @@ int main(int argc, char* argv[]) {
 
     // EQUAL
     
-    textButton equal(WINDOW_WIDTH - 20 - 70, 120 + (45 + 20) * 4, 70, 45,
-                        defaultButtonColor, "=", SDL_Color {0, 0, 0, 255}, mainFont, CENTER, hoveredButtonColor);
+    textButton equal(3 * 20 + 45 * 2 + 60, 120 + (45 + 20) * 3, 60, 45,
+                    defaultButtonColor, "=", SDL_Color {0, 0, 0, 255}, mainFont, CENTER, hoveredButtonColor);
 
     // CLEAR && ALL_CLEAR (C && AC)
 
     textButton clear(3 * 20 + 45 * 2 + 60, 120, 60, 45,
-                        defaultButtonColor, "C", SDL_Color {0, 0, 0, 255}, mainFont, CENTER, hoveredButtonColor);
+                    defaultButtonColor, "C", SDL_Color {0, 0, 0, 255}, mainFont, CENTER, hoveredButtonColor);
 
     textButton allClear(3 * 20 + 45 * 2 + 60, 120 + 45 + 20, 60, 45,
-                        defaultButtonColor, "AC", SDL_Color {0, 0, 0, 255}, mainFont, CENTER, hoveredButtonColor);
+                    defaultButtonColor, "AC", SDL_Color {0, 0, 0, 255}, mainFont, CENTER, hoveredButtonColor);
 
-    num1.setAction([&]() {
-        std::string placeholderString = displayBox.text;
-        placeholderString.append("1");
-        displayBox.text = strdup(placeholderString.c_str());
-    });
-
-    num2.setAction([&]() {
-        std::string placeholderString = displayBox.text;
-        placeholderString.append("2");
-        displayBox.text = strdup(placeholderString.c_str());
-    });
-
-    num3.setAction([&]() {
-        std::string placeholderString = displayBox.text;
-        placeholderString.append("3");
-        displayBox.text = strdup(placeholderString.c_str());
-    });
-
-    num4.setAction([&]() {
-        std::string placeholderString = displayBox.text;
-        placeholderString.append("4");
-        displayBox.text = strdup(placeholderString.c_str());
-    });
-
-    num5.setAction([&]() {
-        std::string placeholderString = displayBox.text;
-        placeholderString.append("5");
-        displayBox.text = strdup(placeholderString.c_str());
-    });
-
-    num6.setAction([&]() {
-        std::string placeholderString = displayBox.text;
-        placeholderString.append("6");
-        displayBox.text = strdup(placeholderString.c_str());
-    });   
-
-    num7.setAction([&]() {
-        std::string placeholderString = displayBox.text;
-        placeholderString.append("7");
-        displayBox.text = strdup(placeholderString.c_str());
-    });
-
-    num8.setAction([&]() {
-        std::string placeholderString = displayBox.text;
-        placeholderString.append("8");
-        displayBox.text = strdup(placeholderString.c_str());
-    });
-
-    num9.setAction([&]() {
-        std::string placeholderString = displayBox.text;
-        placeholderString.append("9");
-        displayBox.text = strdup(placeholderString.c_str());
-    });
+    num1.setAction([&]() { numericButtonHandling("1"); });
+    num2.setAction([&]() { numericButtonHandling("2"); });
+    num3.setAction([&]() { numericButtonHandling("3"); });
+    num4.setAction([&]() { numericButtonHandling("4"); });
+    num5.setAction([&]() { numericButtonHandling("5"); });
+    num6.setAction([&]() { numericButtonHandling("6"); });
+    num7.setAction([&]() { numericButtonHandling("7"); });
+    num8.setAction([&]() { numericButtonHandling("8"); });
+    num9.setAction([&]() { numericButtonHandling("9"); });
+    point.setAction([&]() { numericButtonHandling("."); });
 
     backSpace.setAction([&]() {
         std::string placeholderString = displayBox.text;
@@ -208,118 +259,25 @@ int main(int argc, char* argv[]) {
         }
     });
 
-    sub.setAction([&]() {
-        std::string placeholderString = displayBox.text;
-        if (!placeholderString.empty()) {
-            try {
-                std::stold(placeholderString);
-            }
-            catch (const std::exception &e) {
-                return;
-            }
-            
-            if (currentOperation == SUB && temporaryValue1 != 0) {
-                temporaryValue2 = temporaryValue1 + std::stold(placeholderString);
-                currentOperation = NOOP;
-                displayBox.text = strdup(std::to_string(temporaryValue2).c_str());
-                temporaryValue1 = temporaryValue2;
-                temporaryValue2 = 0;
-                return;
-            }
-
-            currentOperation = SUB;
-
-            if (temporaryValue1 == 0)
-                temporaryValue1 = std::stold(placeholderString);
-        }
-        displayBox.text = "";
-    });
-
-    mul.setAction([&]() {
-        std::string placeholderString = displayBox.text;
-        if (!placeholderString.empty()) {
-            try {
-                std::stold(placeholderString);
-            }
-            catch (const std::exception &e) {
-                return;
-            }
-            
-            if (currentOperation == MUL && temporaryValue1 != 0) {
-                temporaryValue2 = temporaryValue1 + std::stold(placeholderString);
-                currentOperation = NOOP;
-                displayBox.text = strdup(std::to_string(temporaryValue2).c_str());
-                temporaryValue1 = temporaryValue2;
-                temporaryValue2 = 0;
-                return;
-            }
-
-            currentOperation = MUL;
-
-            if (temporaryValue1 == 0)
-                temporaryValue1 = std::stold(placeholderString);
-        }
-        displayBox.text = "";
-    });
-
-    div.setAction([&]() {
-        std::string placeholderString = displayBox.text;
-        if (!placeholderString.empty()) {
-            try {
-                std::stold(placeholderString);
-            }
-            catch (const std::exception &e) {
-                return;
-            }
-            
-            if (currentOperation == DIV && temporaryValue1 != 0) {
-                temporaryValue2 = temporaryValue1 + std::stold(placeholderString);
-                currentOperation = NOOP;
-                displayBox.text = strdup(std::to_string(temporaryValue2).c_str());
-                temporaryValue1 = temporaryValue2;
-                temporaryValue2 = 0;
-                return;
-            }
-
-            currentOperation = DIV;
-
-            if (temporaryValue1 == 0)
-                temporaryValue1 = std::stold(placeholderString);
-        }
-        displayBox.text = "";
-    });
-
-    add.setAction([&]() {
-        std::string placeholderString = displayBox.text;
-        if (!placeholderString.empty()) {
-            try {
-                std::stold(placeholderString);
-            }
-            catch (const std::exception &e) {
-                return;
-            }
-            
-            if (currentOperation == ADD && temporaryValue1 != 0) {
-                temporaryValue2 = temporaryValue1 + std::stold(placeholderString);
-                currentOperation = NOOP;
-                displayBox.text = strdup(std::to_string(temporaryValue2).c_str());
-                temporaryValue1 = temporaryValue2;
-                temporaryValue2 = 0;
-                return;
-            }
-
-            currentOperation = ADD;
-
-            if (temporaryValue1 == 0)
-                temporaryValue1 = std::stold(placeholderString);
-        }
-        displayBox.text = "";
-    });
+    add.buttonAction = std::bind(operationButtonHandling, ADD);
+    sub.buttonAction = std::bind(operationButtonHandling, SUB);
+    mul.buttonAction = std::bind(operationButtonHandling, MUL);
+    div.buttonAction = std::bind(operationButtonHandling, DIV);
 
     equal.setAction([&]() {
-        std::string placeholderString = displayBox.text;
-        long double placeholderNum = std::stold(placeholderString);
-        if (temporaryValue1 == NULL) {
+        std::string placeholderString = displayBox.text;       
+        if (temporaryValue1 == NULL || placeholderString == "") {
+            std::cout << "Temp == NULL || BlankStr\n";
+            return;
+        }
+        long double placeholderNum;
+        try {
+            placeholderNum = std::stold(placeholderString);
+        } catch (const std::invalid_argument &e) {
+            displayBox.text = "SYNTAX ERROR";
+            numericButtons.toggleAllActive(false);
+            functionButtons.toggleAllActive(false);
+            operationButtons.toggleAllActive(false);
             return;
         }
         switch (currentOperation) {
@@ -327,22 +285,22 @@ int main(int argc, char* argv[]) {
                 break;
             case ADD: {
                 currentOperation = NOOP;
-                placeholderNum += temporaryValue1;
+                temporaryValue1 += placeholderNum;
                 break;
             }
             case SUB: {
                 currentOperation = NOOP;
-                placeholderNum -= temporaryValue1;
+                temporaryValue1 -= placeholderNum;
                 break;
             }
             case MUL: {
                 currentOperation = NOOP;
-                placeholderNum *= temporaryValue1;
+                temporaryValue1 *= placeholderNum;
                 break;
             }
             case DIV: {
                 currentOperation = NOOP;
-                placeholderNum /= temporaryValue1;
+                temporaryValue1 /= placeholderNum ;
                 break;
             }
         }
@@ -350,7 +308,8 @@ int main(int argc, char* argv[]) {
             case NONE:
                 break;
         }
-        displayBox.text = std::to_string(placeholderNum);
+        displayBox.text = std::to_string(temporaryValue1);
+        currentOpBox.text = "N";
         temporaryValue1 = NULL;
     });
 
@@ -364,11 +323,12 @@ int main(int argc, char* argv[]) {
     numericButtons.addButton(num7);
     numericButtons.addButton(num8);
     numericButtons.addButton(num9);
+    numericButtons.addButton(point);
 
     functionButtons.addButton(backSpace);
     functionButtons.addButton(clear);
+    functionButtons.addButton(equal);
 
-    specialButtons.addButton(equal);
     specialButtons.addButton(allClear);
 
     operationButtons.addButton(add);
@@ -389,7 +349,7 @@ int main(int argc, char* argv[]) {
 
     while (isRunning) {
 		while (SDL_PollEvent(&event)) {
-			mainClass.processEvent(mainRenderer, mainWindow, event, isRunning, mainFont);
+			isRunning = mainClass.processEvent(event);
             numericButtons.handleEvents(event);
 			operationButtons.handleEvents(event);
 			functionButtons.handleEvents(event);
@@ -402,6 +362,7 @@ int main(int argc, char* argv[]) {
         // whatever that needs to be rendered go between RenderClear and RenderPresent
 
         displayBox.render(mainRenderer);
+        currentOpBox.render(mainRenderer);
         //prevInputBox.render(mainRenderer);
 
         numericButtons.renderAll(mainRenderer);
