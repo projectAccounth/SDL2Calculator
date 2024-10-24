@@ -16,6 +16,73 @@ SDL_Renderer *mainRenderer = NULL;
 SDL_Color defaultButtonColor = {188, 188, 188, 255};
 SDL_Color hoveredButtonColor = {155, 155, 155, 255};
 
+long double temporaryValue1 = NULL, temporaryValue2 = NULL;
+
+CURRENT_FUNCTION currentFunction = NONE;
+CURRENT_OPERATION currentOperation = NOOP;
+
+// functions for binding
+std::function<void(std::string, textBox)> numericButtonHandling = [&](std::string str, textBox box) {
+    std::string placeholderString = box.text;
+    placeholderString.append(str);
+    box.text = strdup(placeholderString.c_str());
+};
+
+std::function<void(CURRENT_OPERATION, textBox)> operationButtonHandling = [&](CURRENT_OPERATION op, textBox box) {
+    std::string placeholderString = box.text;
+    if (!placeholderString.empty()) {
+        try {
+            std::stold(placeholderString);
+        }
+        catch (const std::exception &e) {
+            return;
+        }
+
+        if (temporaryValue1 != 0) {
+            switch(op) {
+                case NOOP:
+                    break;
+                case ADD: {
+                    temporaryValue2 = temporaryValue1 + std::stold(placeholderString);
+                    currentOperation = NOOP;
+                    box.text = strdup(std::to_string(temporaryValue2).c_str());
+                    temporaryValue1 = temporaryValue2;
+                    temporaryValue2 = 0;
+                    return;
+                }
+                case SUB: {
+                    temporaryValue2 = temporaryValue1 - std::stold(placeholderString);
+                    currentOperation = NOOP;
+                    box.text = strdup(std::to_string(temporaryValue2).c_str());
+                    temporaryValue1 = temporaryValue2;
+                    temporaryValue2 = 0;
+                    return;
+                }
+                case MUL: {
+                    temporaryValue2 = temporaryValue1 * std::stold(placeholderString);
+                    currentOperation = NOOP;
+                    box.text = strdup(std::to_string(temporaryValue2).c_str());
+                    temporaryValue1 = temporaryValue2;
+                    temporaryValue2 = 0;
+                    return;
+                }
+                case DIV: {
+                    temporaryValue2 = temporaryValue1 / std::stold(placeholderString);
+                    currentOperation = NOOP;
+                    box.text = strdup(std::to_string(temporaryValue2).c_str());
+                    temporaryValue1 = temporaryValue2;
+                    temporaryValue2 = 0;
+                    return;
+                }
+            }
+        }
+        currentOperation = op;
+
+        if (temporaryValue1 == 0)
+            temporaryValue1 = std::stold(placeholderString);
+    }
+    box.text = "";
+};
 
 // corresponding button lists for those button types
 buttonManager numericButtons;
@@ -30,12 +97,6 @@ int main(int argc, char* argv[]) {
     Main mainClass;
 
     Window programWindow;
-
-    long double temporaryValue1 = NULL, temporaryValue2 = NULL;
-
-    CURRENT_FUNCTION currentFunction = NONE;
-
-    CURRENT_OPERATION currentOperation = NOOP;
 
     SDL_Init(SDL_INIT_EVERYTHING);
     TTF_Init();
@@ -115,59 +176,15 @@ int main(int argc, char* argv[]) {
     textButton allClear(3 * 20 + 45 * 2 + 60, 120 + 45 + 20, 60, 45,
                         defaultButtonColor, "AC", SDL_Color {0, 0, 0, 255}, mainFont, CENTER, hoveredButtonColor);
 
-    num1.setAction([&]() {
-        std::string placeholderString = displayBox.text;
-        placeholderString.append("1");
-        displayBox.text = strdup(placeholderString.c_str());
-    });
-
-    num2.setAction([&]() {
-        std::string placeholderString = displayBox.text;
-        placeholderString.append("2");
-        displayBox.text = strdup(placeholderString.c_str());
-    });
-
-    num3.setAction([&]() {
-        std::string placeholderString = displayBox.text;
-        placeholderString.append("3");
-        displayBox.text = strdup(placeholderString.c_str());
-    });
-
-    num4.setAction([&]() {
-        std::string placeholderString = displayBox.text;
-        placeholderString.append("4");
-        displayBox.text = strdup(placeholderString.c_str());
-    });
-
-    num5.setAction([&]() {
-        std::string placeholderString = displayBox.text;
-        placeholderString.append("5");
-        displayBox.text = strdup(placeholderString.c_str());
-    });
-
-    num6.setAction([&]() {
-        std::string placeholderString = displayBox.text;
-        placeholderString.append("6");
-        displayBox.text = strdup(placeholderString.c_str());
-    });   
-
-    num7.setAction([&]() {
-        std::string placeholderString = displayBox.text;
-        placeholderString.append("7");
-        displayBox.text = strdup(placeholderString.c_str());
-    });
-
-    num8.setAction([&]() {
-        std::string placeholderString = displayBox.text;
-        placeholderString.append("8");
-        displayBox.text = strdup(placeholderString.c_str());
-    });
-
-    num9.setAction([&]() {
-        std::string placeholderString = displayBox.text;
-        placeholderString.append("9");
-        displayBox.text = strdup(placeholderString.c_str());
-    });
+    num1.buttonAction = std::bind(numericButtonHandling, "1", displayBox);
+    num2.buttonAction = std::bind(numericButtonHandling, "2", displayBox);
+    num3.buttonAction = std::bind(numericButtonHandling, "3", displayBox);
+    num4.buttonAction = std::bind(numericButtonHandling, "4", displayBox);
+    num5.buttonAction = std::bind(numericButtonHandling, "5", displayBox);
+    num6.buttonAction = std::bind(numericButtonHandling, "6", displayBox);
+    num7.buttonAction = std::bind(numericButtonHandling, "7", displayBox);
+    num8.buttonAction = std::bind(numericButtonHandling, "8", displayBox);
+    num9.buttonAction = std::bind(numericButtonHandling, "9", displayBox);
 
     backSpace.setAction([&]() {
         std::string placeholderString = displayBox.text;
@@ -208,113 +225,10 @@ int main(int argc, char* argv[]) {
         }
     });
 
-    sub.setAction([&]() {
-        std::string placeholderString = displayBox.text;
-        if (!placeholderString.empty()) {
-            try {
-                std::stold(placeholderString);
-            }
-            catch (const std::exception &e) {
-                return;
-            }
-            
-            if (currentOperation == SUB && temporaryValue1 != 0) {
-                temporaryValue2 = temporaryValue1 + std::stold(placeholderString);
-                currentOperation = NOOP;
-                displayBox.text = strdup(std::to_string(temporaryValue2).c_str());
-                temporaryValue1 = temporaryValue2;
-                temporaryValue2 = 0;
-                return;
-            }
-
-            currentOperation = SUB;
-
-            if (temporaryValue1 == 0)
-                temporaryValue1 = std::stold(placeholderString);
-        }
-        displayBox.text = "";
-    });
-
-    mul.setAction([&]() {
-        std::string placeholderString = displayBox.text;
-        if (!placeholderString.empty()) {
-            try {
-                std::stold(placeholderString);
-            }
-            catch (const std::exception &e) {
-                return;
-            }
-            
-            if (currentOperation == MUL && temporaryValue1 != 0) {
-                temporaryValue2 = temporaryValue1 + std::stold(placeholderString);
-                currentOperation = NOOP;
-                displayBox.text = strdup(std::to_string(temporaryValue2).c_str());
-                temporaryValue1 = temporaryValue2;
-                temporaryValue2 = 0;
-                return;
-            }
-
-            currentOperation = MUL;
-
-            if (temporaryValue1 == 0)
-                temporaryValue1 = std::stold(placeholderString);
-        }
-        displayBox.text = "";
-    });
-
-    div.setAction([&]() {
-        std::string placeholderString = displayBox.text;
-        if (!placeholderString.empty()) {
-            try {
-                std::stold(placeholderString);
-            }
-            catch (const std::exception &e) {
-                return;
-            }
-            
-            if (currentOperation == DIV && temporaryValue1 != 0) {
-                temporaryValue2 = temporaryValue1 + std::stold(placeholderString);
-                currentOperation = NOOP;
-                displayBox.text = strdup(std::to_string(temporaryValue2).c_str());
-                temporaryValue1 = temporaryValue2;
-                temporaryValue2 = 0;
-                return;
-            }
-
-            currentOperation = DIV;
-
-            if (temporaryValue1 == 0)
-                temporaryValue1 = std::stold(placeholderString);
-        }
-        displayBox.text = "";
-    });
-
-    add.setAction([&]() {
-        std::string placeholderString = displayBox.text;
-        if (!placeholderString.empty()) {
-            try {
-                std::stold(placeholderString);
-            }
-            catch (const std::exception &e) {
-                return;
-            }
-            
-            if (currentOperation == ADD && temporaryValue1 != 0) {
-                temporaryValue2 = temporaryValue1 + std::stold(placeholderString);
-                currentOperation = NOOP;
-                displayBox.text = strdup(std::to_string(temporaryValue2).c_str());
-                temporaryValue1 = temporaryValue2;
-                temporaryValue2 = 0;
-                return;
-            }
-
-            currentOperation = ADD;
-
-            if (temporaryValue1 == 0)
-                temporaryValue1 = std::stold(placeholderString);
-        }
-        displayBox.text = "";
-    });
+    add.buttonAction = std::bind(operationButtonHandling, ADD, displayBox);
+    sub.buttonAction = std::bind(operationButtonHandling, SUB, displayBox);
+    mul.buttonAction = std::bind(operationButtonHandling, MUL, displayBox);
+    div.buttonAction = std::bind(operationButtonHandling, DIV, displayBox);
 
     equal.setAction([&]() {
         std::string placeholderString = displayBox.text;
