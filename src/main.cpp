@@ -49,7 +49,7 @@ int main(int argc, char* argv[]) {
     mainRenderer = programWindow.createRenderer(mainWindow);
 
     textBox displayBox(SDL_Rect{20, 20, 315, 70}, SDL_Color{188, 188, 188, 255}, "", SDL_Color{0, 0, 0, 255}, mainFont);
-    textBox currentOpBox(SDL_Rect{315 - 20, 20, 20, 20}, SDL_Color{188, 188, 188, 0}, "N/A", SDL_Color{0, 0, 0, 255}, mainFont);
+    textBox currentOpBox(SDL_Rect{315 - 12, 20 + 10, 20, 20}, SDL_Color{188, 188, 188, 0}, "N", SDL_Color{0, 0, 0, 255}, mainFont);
     //textBox prevInputBox(SDL_Rect{WINDOW_WIDTH - 20 - 80, 20, 80, 70}, SDL_Color{188, 188, 188, 255}, "", SDL_Color{0, 0, 0, 255}, mainFont);
 
     if (mainFont == nullptr) {
@@ -115,13 +115,13 @@ int main(int argc, char* argv[]) {
                         return;
                     }
                 }
-                currentOpBox.text = "N/A";
+                currentOpBox.text = "N";
             }
             currentOperation = op;
             
             switch (op) {
                 case NOOP:
-                    currentOpBox.text = "N/A";
+                    currentOpBox.text = "N";
                     break;
                 case ADD:
                     currentOpBox.text = "+";
@@ -137,8 +137,10 @@ int main(int argc, char* argv[]) {
                     break;
             }
 
-            if (temporaryValue1 == NULL)
+            if (temporaryValue1 == NULL) {
                 temporaryValue1 = std::stold(placeholderString);
+                std::cout << "Assigned " << temporaryValue1 << "\n";
+            }
         }
         displayBox.text = "";
     };
@@ -264,7 +266,7 @@ int main(int argc, char* argv[]) {
 
     equal.setAction([&]() {
         std::string placeholderString = displayBox.text;       
-        if (placeholderString == "") {
+        if (temporaryValue1 == NULL || placeholderString == "") {
             std::cout << "Temp == NULL || BlankStr\n";
             return;
         }
@@ -277,7 +279,7 @@ int main(int argc, char* argv[]) {
             functionButtons.toggleAllActive(false);
             operationButtons.toggleAllActive(false);
             return;
-        }      
+        }
         switch (currentOperation) {
             case NOOP:
                 break;
@@ -301,14 +303,13 @@ int main(int argc, char* argv[]) {
                 temporaryValue1 /= placeholderNum ;
                 break;
             }
-            currentOpBox.text = "N/A";
-            std::cout << temporaryValue1 << "\n";
         }
         switch (currentFunction) {
             case NONE:
                 break;
         }
-        displayBox.text = std::to_string(placeholderNum);
+        displayBox.text = std::to_string(temporaryValue1);
+        currentOpBox.text = "N";
         temporaryValue1 = NULL;
     });
 
