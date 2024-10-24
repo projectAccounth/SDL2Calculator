@@ -25,6 +25,9 @@ buttonManager specialButtons;
 
 int main(int argc, char* argv[]) {
 
+    std::cout << std::defaultfloat;
+    std::cout << std::setprecision(8);
+
     long double temporaryValue1 = NULL, temporaryValue2 = NULL;
 
     CURRENT_FUNCTION currentFunction = NONE;
@@ -45,7 +48,8 @@ int main(int argc, char* argv[]) {
 
     mainRenderer = programWindow.createRenderer(mainWindow);
 
-    textBox displayBox(SDL_Rect{20, 20, 360, 70}, SDL_Color{188, 188, 188, 255}, "", SDL_Color{0, 0, 0, 255}, mainFont);
+    textBox displayBox(SDL_Rect{20, 20, 315, 70}, SDL_Color{188, 188, 188, 255}, "", SDL_Color{0, 0, 0, 255}, mainFont);
+    textBox currentOpBox(SDL_Rect{315 - 20, 20, 20, 20}, SDL_Color{188, 188, 188, 0}, "N/A", SDL_Color{0, 0, 0, 255}, mainFont);
     //textBox prevInputBox(SDL_Rect{WINDOW_WIDTH - 20 - 80, 20, 80, 70}, SDL_Color{188, 188, 188, 255}, "", SDL_Color{0, 0, 0, 255}, mainFont);
 
     if (mainFont == nullptr) {
@@ -55,7 +59,6 @@ int main(int argc, char* argv[]) {
 
     // functions for binding
     std::function<void(std::string)> numericButtonHandling = [&](std::string str) {
-        std::cout << "Made it there\n";
         std::string placeholderString = displayBox.text;
         placeholderString.append(str);
         displayBox.text = strdup(placeholderString.c_str());
@@ -63,7 +66,6 @@ int main(int argc, char* argv[]) {
 
     std::function<void(CURRENT_OPERATION)> operationButtonHandling = [&](CURRENT_OPERATION op) {
         std::string placeholderString = displayBox.text;
-        std::cout << "Made it here\n";
         if (!placeholderString.empty()) {
             try {
                 std::stold(placeholderString);
@@ -76,7 +78,7 @@ int main(int argc, char* argv[]) {
                 return;
             }
 
-            if (temporaryValue1 != 0) {
+            if (temporaryValue1 != NULL) {
                 switch(op) {
                     case NOOP:
                         break;
@@ -113,10 +115,29 @@ int main(int argc, char* argv[]) {
                         return;
                     }
                 }
+                currentOpBox.text = "N/A";
             }
             currentOperation = op;
+            
+            switch (op) {
+                case NOOP:
+                    currentOpBox.text = "N/A";
+                    break;
+                case ADD:
+                    currentOpBox.text = "+";
+                    break;
+                case SUB:
+                    currentOpBox.text = "-";
+                    break;
+                case MUL:
+                    currentOpBox.text = "*";
+                    break;
+                case DIV:
+                    currentOpBox.text = "/";
+                    break;
+            }
 
-            if (temporaryValue1 == 0)
+            if (temporaryValue1 == NULL)
                 temporaryValue1 = std::stold(placeholderString);
         }
         displayBox.text = "";
@@ -150,6 +171,11 @@ int main(int argc, char* argv[]) {
     textButton num9(3 * 20 + 45 * 2, 120 + 45 * 2 + 20 * 2, 45, 45,
                     defaultButtonColor, "9", SDL_Color {0, 0, 0, 255}, mainFont, CENTER, hoveredButtonColor);
 
+    // Additional buttons
+
+    textButton point(3 * 20 + 45 * 2 + 60, 120 + (45 + 20) * 2, 60, 45,
+                    defaultButtonColor, ".", SDL_Color {0, 0, 0, 255}, mainFont, CENTER, hoveredButtonColor);
+
     // Fourth row function + operation buttons
 
     textButton backSpace(20, 120 + (45 + 20) * 3, 77, 45,
@@ -170,16 +196,16 @@ int main(int argc, char* argv[]) {
 
     // EQUAL
     
-    textButton equal(WINDOW_WIDTH - 20 - 70, 120 + (45 + 20) * 4, 70, 45,
-                        defaultButtonColor, "=", SDL_Color {0, 0, 0, 255}, mainFont, CENTER, hoveredButtonColor);
+    textButton equal(3 * 20 + 45 * 2 + 60, 120 + (45 + 20) * 3, 60, 45,
+                    defaultButtonColor, "=", SDL_Color {0, 0, 0, 255}, mainFont, CENTER, hoveredButtonColor);
 
     // CLEAR && ALL_CLEAR (C && AC)
 
     textButton clear(3 * 20 + 45 * 2 + 60, 120, 60, 45,
-                        defaultButtonColor, "C", SDL_Color {0, 0, 0, 255}, mainFont, CENTER, hoveredButtonColor);
+                    defaultButtonColor, "C", SDL_Color {0, 0, 0, 255}, mainFont, CENTER, hoveredButtonColor);
 
     textButton allClear(3 * 20 + 45 * 2 + 60, 120 + 45 + 20, 60, 45,
-                        defaultButtonColor, "AC", SDL_Color {0, 0, 0, 255}, mainFont, CENTER, hoveredButtonColor);
+                    defaultButtonColor, "AC", SDL_Color {0, 0, 0, 255}, mainFont, CENTER, hoveredButtonColor);
 
     num1.setAction([&]() { numericButtonHandling("1"); });
     num2.setAction([&]() { numericButtonHandling("2"); });
@@ -190,6 +216,7 @@ int main(int argc, char* argv[]) {
     num7.setAction([&]() { numericButtonHandling("7"); });
     num8.setAction([&]() { numericButtonHandling("8"); });
     num9.setAction([&]() { numericButtonHandling("9"); });
+    point.setAction([&]() { numericButtonHandling("."); });
 
     backSpace.setAction([&]() {
         std::string placeholderString = displayBox.text;
@@ -237,7 +264,8 @@ int main(int argc, char* argv[]) {
 
     equal.setAction([&]() {
         std::string placeholderString = displayBox.text;       
-        if (temporaryValue1 == NULL || placeholderString == "") {
+        if (placeholderString == "") {
+            std::cout << "Temp == NULL || BlankStr\n";
             return;
         }
         long double placeholderNum;
@@ -255,24 +283,26 @@ int main(int argc, char* argv[]) {
                 break;
             case ADD: {
                 currentOperation = NOOP;
-                placeholderNum += temporaryValue1;
+                temporaryValue1 += placeholderNum;
                 break;
             }
             case SUB: {
                 currentOperation = NOOP;
-                placeholderNum -= temporaryValue1;
+                temporaryValue1 -= placeholderNum;
                 break;
             }
             case MUL: {
                 currentOperation = NOOP;
-                placeholderNum *= temporaryValue1;
+                temporaryValue1 *= placeholderNum;
                 break;
             }
             case DIV: {
                 currentOperation = NOOP;
-                placeholderNum /= temporaryValue1;
+                temporaryValue1 /= placeholderNum ;
                 break;
             }
+            currentOpBox.text = "N/A";
+            std::cout << temporaryValue1 << "\n";
         }
         switch (currentFunction) {
             case NONE:
@@ -292,6 +322,7 @@ int main(int argc, char* argv[]) {
     numericButtons.addButton(num7);
     numericButtons.addButton(num8);
     numericButtons.addButton(num9);
+    numericButtons.addButton(point);
 
     functionButtons.addButton(backSpace);
     functionButtons.addButton(clear);
@@ -317,7 +348,7 @@ int main(int argc, char* argv[]) {
 
     while (isRunning) {
 		while (SDL_PollEvent(&event)) {
-			mainClass.processEvent(mainRenderer, mainWindow, event, isRunning, mainFont);
+			isRunning = mainClass.processEvent(event);
             numericButtons.handleEvents(event);
 			operationButtons.handleEvents(event);
 			functionButtons.handleEvents(event);
@@ -330,6 +361,7 @@ int main(int argc, char* argv[]) {
         // whatever that needs to be rendered go between RenderClear and RenderPresent
 
         displayBox.render(mainRenderer);
+        currentOpBox.render(mainRenderer);
         //prevInputBox.render(mainRenderer);
 
         numericButtons.renderAll(mainRenderer);

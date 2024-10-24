@@ -11,7 +11,7 @@ namespace mainProgram {
     }
 
     SDL_Renderer* Window::createRenderer(SDL_Window *window) {
-        return SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
+        return SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
     }
 
     std::vector<SDL_Event>& GetFrameEvents() {
