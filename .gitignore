@@ -4,3 +4,5 @@ clog.txt
 build.sh
 obj
 debug
+.vs
+*.json

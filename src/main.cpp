@@ -16,83 +16,19 @@ SDL_Renderer *mainRenderer = NULL;
 SDL_Color defaultButtonColor = {188, 188, 188, 255};
 SDL_Color hoveredButtonColor = {155, 155, 155, 255};
 
-long double temporaryValue1 = NULL, temporaryValue2 = NULL;
-
-CURRENT_FUNCTION currentFunction = NONE;
-CURRENT_OPERATION currentOperation = NOOP;
-
-// functions for binding
-std::function<void(std::string, textBox)> numericButtonHandling = [&](std::string str, textBox box) {
-    std::string placeholderString = box.text;
-    placeholderString.append(str);
-    box.text = strdup(placeholderString.c_str());
-};
-
-std::function<void(CURRENT_OPERATION, textBox)> operationButtonHandling = [&](CURRENT_OPERATION op, textBox box) {
-    std::string placeholderString = box.text;
-    if (!placeholderString.empty()) {
-        try {
-            std::stold(placeholderString);
-        }
-        catch (const std::exception &e) {
-            return;
-        }
-
-        if (temporaryValue1 != 0) {
-            switch(op) {
-                case NOOP:
-                    break;
-                case ADD: {
-                    temporaryValue2 = temporaryValue1 + std::stold(placeholderString);
-                    currentOperation = NOOP;
-                    box.text = strdup(std::to_string(temporaryValue2).c_str());
-                    temporaryValue1 = temporaryValue2;
-                    temporaryValue2 = 0;
-                    return;
-                }
-                case SUB: {
-                    temporaryValue2 = temporaryValue1 - std::stold(placeholderString);
-                    currentOperation = NOOP;
-                    box.text = strdup(std::to_string(temporaryValue2).c_str());
-                    temporaryValue1 = temporaryValue2;
-                    temporaryValue2 = 0;
-                    return;
-                }
-                case MUL: {
-                    temporaryValue2 = temporaryValue1 * std::stold(placeholderString);
-                    currentOperation = NOOP;
-                    box.text = strdup(std::to_string(temporaryValue2).c_str());
-                    temporaryValue1 = temporaryValue2;
-                    temporaryValue2 = 0;
-                    return;
-                }
-                case DIV: {
-                    temporaryValue2 = temporaryValue1 / std::stold(placeholderString);
-                    currentOperation = NOOP;
-                    box.text = strdup(std::to_string(temporaryValue2).c_str());
-                    temporaryValue1 = temporaryValue2;
-                    temporaryValue2 = 0;
-                    return;
-                }
-            }
-        }
-        currentOperation = op;
-
-        if (temporaryValue1 == 0)
-            temporaryValue1 = std::stold(placeholderString);
-    }
-    box.text = "";
-};
-
 // corresponding button lists for those button types
 buttonManager numericButtons;
 buttonManager operationButtons;
 buttonManager functionButtons;
 buttonManager specialButtons;
 
-const char* emptyStr = "";
 
 int main(int argc, char* argv[]) {
+
+    long double temporaryValue1 = NULL, temporaryValue2 = NULL;
+
+    CURRENT_FUNCTION currentFunction = NONE;
+    CURRENT_OPERATION currentOperation = NOOP;
     
     Main mainClass;
 
@@ -116,6 +52,75 @@ int main(int argc, char* argv[]) {
         std::cout << SDL_GetError();
         return -1;
     }
+
+    // functions for binding
+    std::function<void(std::string)> numericButtonHandling = [&](std::string str) {
+        std::cout << "Made it there\n";
+        std::string placeholderString = displayBox.text;
+        placeholderString.append(str);
+        displayBox.text = strdup(placeholderString.c_str());
+    };
+
+    std::function<void(CURRENT_OPERATION)> operationButtonHandling = [&](CURRENT_OPERATION op) {
+        std::string placeholderString = displayBox.text;
+        std::cout << "Made it here\n";
+        if (!placeholderString.empty()) {
+            try {
+                std::stold(placeholderString);
+            }
+            catch (const std::invalid_argument &e) {
+                displayBox.text = "SYNTAX ERROR";
+                numericButtons.toggleAllActive(false);
+                functionButtons.toggleAllActive(false);
+                operationButtons.toggleAllActive(false);
+                return;
+            }
+
+            if (temporaryValue1 != 0) {
+                switch(op) {
+                    case NOOP:
+                        break;
+                    case ADD: {
+                        temporaryValue2 = temporaryValue1 + std::stold(placeholderString);
+                        currentOperation = NOOP;
+                        displayBox.text = strdup(std::to_string(temporaryValue2).c_str());
+                        temporaryValue1 = NULL;
+                        temporaryValue2 = NULL;
+                        return;
+                    }
+                    case SUB: {
+                        temporaryValue2 = temporaryValue1 - std::stold(placeholderString);
+                        currentOperation = NOOP;
+                        displayBox.text = strdup(std::to_string(temporaryValue2).c_str());
+                        temporaryValue1 = NULL;
+                        temporaryValue2 = NULL;
+                        return;
+                    }
+                    case MUL: {
+                        temporaryValue2 = temporaryValue1 * std::stold(placeholderString);
+                        currentOperation = NOOP;
+                        displayBox.text = strdup(std::to_string(temporaryValue2).c_str());
+                        temporaryValue1 = NULL;
+                        temporaryValue2 = NULL;
+                        return;
+                    }
+                    case DIV: {
+                        temporaryValue2 = temporaryValue1 / std::stold(placeholderString);
+                        currentOperation = NOOP;
+                        displayBox.text = strdup(std::to_string(temporaryValue2).c_str());
+                        temporaryValue1 = NULL;
+                        temporaryValue2 = NULL;
+                        return;
+                    }
+                }
+            }
+            currentOperation = op;
+
+            if (temporaryValue1 == 0)
+                temporaryValue1 = std::stold(placeholderString);
+        }
+        displayBox.text = "";
+    };
 
     std::cout << SDL_GetError() << "\n";
 
@@ -176,15 +181,15 @@ int main(int argc, char* argv[]) {
     textButton allClear(3 * 20 + 45 * 2 + 60, 120 + 45 + 20, 60, 45,
                         defaultButtonColor, "AC", SDL_Color {0, 0, 0, 255}, mainFont, CENTER, hoveredButtonColor);
 
-    num1.buttonAction = std::bind(numericButtonHandling, "1", displayBox);
-    num2.buttonAction = std::bind(numericButtonHandling, "2", displayBox);
-    num3.buttonAction = std::bind(numericButtonHandling, "3", displayBox);
-    num4.buttonAction = std::bind(numericButtonHandling, "4", displayBox);
-    num5.buttonAction = std::bind(numericButtonHandling, "5", displayBox);
-    num6.buttonAction = std::bind(numericButtonHandling, "6", displayBox);
-    num7.buttonAction = std::bind(numericButtonHandling, "7", displayBox);
-    num8.buttonAction = std::bind(numericButtonHandling, "8", displayBox);
-    num9.buttonAction = std::bind(numericButtonHandling, "9", displayBox);
+    num1.setAction([&]() { numericButtonHandling("1"); });
+    num2.setAction([&]() { numericButtonHandling("2"); });
+    num3.setAction([&]() { numericButtonHandling("3"); });
+    num4.setAction([&]() { numericButtonHandling("4"); });
+    num5.setAction([&]() { numericButtonHandling("5"); });
+    num6.setAction([&]() { numericButtonHandling("6"); });
+    num7.setAction([&]() { numericButtonHandling("7"); });
+    num8.setAction([&]() { numericButtonHandling("8"); });
+    num9.setAction([&]() { numericButtonHandling("9"); });
 
     backSpace.setAction([&]() {
         std::string placeholderString = displayBox.text;
@@ -225,17 +230,26 @@ int main(int argc, char* argv[]) {
         }
     });
 
-    add.buttonAction = std::bind(operationButtonHandling, ADD, displayBox);
-    sub.buttonAction = std::bind(operationButtonHandling, SUB, displayBox);
-    mul.buttonAction = std::bind(operationButtonHandling, MUL, displayBox);
-    div.buttonAction = std::bind(operationButtonHandling, DIV, displayBox);
+    add.buttonAction = std::bind(operationButtonHandling, ADD);
+    sub.buttonAction = std::bind(operationButtonHandling, SUB);
+    mul.buttonAction = std::bind(operationButtonHandling, MUL);
+    div.buttonAction = std::bind(operationButtonHandling, DIV);
 
     equal.setAction([&]() {
-        std::string placeholderString = displayBox.text;
-        long double placeholderNum = std::stold(placeholderString);
-        if (temporaryValue1 == NULL) {
+        std::string placeholderString = displayBox.text;       
+        if (temporaryValue1 == NULL || placeholderString == "") {
             return;
         }
+        long double placeholderNum;
+        try {
+            placeholderNum = std::stold(placeholderString);
+        } catch (const std::invalid_argument &e) {
+            displayBox.text = "SYNTAX ERROR";
+            numericButtons.toggleAllActive(false);
+            functionButtons.toggleAllActive(false);
+            operationButtons.toggleAllActive(false);
+            return;
+        }      
         switch (currentOperation) {
             case NOOP:
                 break;
@@ -281,8 +295,8 @@ int main(int argc, char* argv[]) {
 
     functionButtons.addButton(backSpace);
     functionButtons.addButton(clear);
+    functionButtons.addButton(equal);
 
-    specialButtons.addButton(equal);
     specialButtons.addButton(allClear);
 
     operationButtons.addButton(add);
